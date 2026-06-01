@@ -4,6 +4,7 @@ pub mod daterange;
 pub mod decimal;
 pub mod filter;
 pub mod hash;
+pub mod i18n;
 pub mod id;
 pub mod json;
 pub mod money;

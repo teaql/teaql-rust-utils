@@ -59,6 +59,11 @@ impl T {
     }
 
     #[cfg(feature = "std")]
+    pub fn i18n() -> teaql_tool_std::i18n::I18nTool {
+        teaql_tool_std::i18n::I18nTool::new()
+    }
+
+    #[cfg(feature = "std")]
     pub fn system() -> teaql_tool_std::system::SystemTool {
         teaql_tool_std::system::SystemTool::new()
     }

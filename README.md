@@ -156,7 +156,15 @@ Parse and generate CSV formats instantly.
 let data = T::csv().parse("name,age\nAlice,30").unwrap();
 ```
 
-### 14. `T::color()`
+### 14. `T::i18n()`
+Lightweight multi-language localization (i18n) tool supporting JSON loading.
+```rust
+let mut i18n = T::i18n();
+i18n.load_json("zh_CN", r#"{"greeting": "你好, {name}!"}"#).unwrap();
+let msg = i18n.tf("zh_CN", "greeting", &[("name", "Alice")]); // "你好, Alice!"
+```
+
+### 15. `T::color()`
 Get hex codes for standard named colors easily.
 ```rust
 let hex = T::color().alice_blue(); // "#F0F8FF"

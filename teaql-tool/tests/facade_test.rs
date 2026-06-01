@@ -23,6 +23,11 @@ fn test_facade_standard_tools() {
     // DateRange Tool
     let today = T::daterange().today();
     assert!(today.start <= today.end);
+    
+    // I18n Tool
+    let mut i18n = T::i18n();
+    i18n.add("en", "greet", "Hello");
+    assert_eq!(i18n.t("en", "greet"), "Hello");
 
     // System Tool
     assert!(!T::system().os().is_empty());
