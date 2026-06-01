@@ -4717,7 +4717,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "teaql-tool-core",
  "teaql-tool-extra",
@@ -4726,14 +4726,14 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "teaql-tool-extra"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aes-gcm",
  "arboard",
@@ -4772,7 +4772,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-std"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aho-corasick",
  "base64",
