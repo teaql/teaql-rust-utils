@@ -17,7 +17,7 @@
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-blue.svg)](#)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](#)
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](#)
 
 ---
 
@@ -180,4 +180,4 @@ Contributions are welcome! If you want to add a new tool to the `T::` namespace:
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache License 2.0.
