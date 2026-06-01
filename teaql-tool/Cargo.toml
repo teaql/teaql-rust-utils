@@ -1,0 +1,20 @@
+[package]
+name = "teaql-tool"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+teaql-tool-core = { path = "../teaql-tool-core" }
+teaql-tool-std = { path = "../teaql-tool-std", optional = true }
+teaql-tool-extra = { path = "../teaql-tool-extra", optional = true }
+
+[features]
+default = ["minimal"]
+
+minimal = [
+    "std",
+]
+
+std = ["dep:teaql-tool-std"]
+extra = ["dep:teaql-tool-extra"]
+

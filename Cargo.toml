@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "teaql-tool-core",
+    "teaql-tool-std",
+    "teaql-tool-extra",
+    "teaql-tool"
+]
+resolver = "2"

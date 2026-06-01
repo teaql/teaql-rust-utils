@@ -1,0 +1,10 @@
+[package]
+name = "teaql-tool-extra"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+teaql-tool-core = { path = "../teaql-tool-core" }
+rand = "0.10.1"
+aes-gcm = "0.10.3"
+csv = "1.4.0"
