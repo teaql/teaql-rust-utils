@@ -1,4 +1,5 @@
 pub mod address;
+pub mod barcode;
 pub mod cache;
 pub mod config;
 pub mod crypto;
@@ -10,5 +11,6 @@ pub mod http;
 pub mod image;
 pub mod jwt;
 pub mod phone;
+pub mod qrcode;
 pub mod random;
 pub mod template;

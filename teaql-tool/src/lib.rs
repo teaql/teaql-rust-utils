@@ -109,6 +109,11 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
+    pub fn barcode() -> teaql_tool_extra::barcode::BarcodeTool {
+        teaql_tool_extra::barcode::BarcodeTool::new()
+    }
+
+    #[cfg(feature = "extra")]
     pub fn cache() -> teaql_tool_extra::cache::CacheTool {
         teaql_tool_extra::cache::CacheTool::new()
     }
@@ -161,6 +166,11 @@ impl T {
     #[cfg(feature = "extra")]
     pub fn phone() -> teaql_tool_extra::phone::PhoneTool {
         teaql_tool_extra::phone::PhoneTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn qrcode() -> teaql_tool_extra::qrcode::QrcodeTool {
+        teaql_tool_extra::qrcode::QrcodeTool::new()
     }
 
     #[cfg(feature = "extra")]

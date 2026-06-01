@@ -250,6 +250,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "barcoders"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a3826fb6e98ec72c0c0db8c9a40af4932d16793021027469857e84c1b50a1e8f"
+dependencies = [
+ "image",
+]
+
+[[package]]
 name = "base16ct"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2886,6 +2895,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "qrcode"
+version = "0.14.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d68782463e408eb1e668cf6152704bd856c78c5b6417adaee3203d8f4c1fc9ec"
+dependencies = [
+ "image",
+]
+
+[[package]]
 name = "quick-error"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3911,6 +3929,7 @@ name = "teaql-tool-extra"
 version = "0.1.0"
 dependencies = [
  "aes-gcm",
+ "barcoders",
  "calamine",
  "csv",
  "dotenvy",
@@ -3919,6 +3938,7 @@ dependencies = [
  "lettre",
  "moka",
  "phonenumber",
+ "qrcode",
  "rand 0.10.1",
  "reqwest",
  "rust_xlsxwriter",
