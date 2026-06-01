@@ -14,6 +14,16 @@ fn test_facade_standard_tools() {
     let b64 = T::codec().base64_encode("facade");
     assert_eq!(b64, "ZmFjYWRl");
 
+    // Validate Tool
+    assert!(T::validate().email("test@teaql.com"));
+
+    // System Tool
+    assert!(!T::system().os().is_empty());
+
+    // Filter Tool
+    let trie = T::filter().build_trie(&["bad"]);
+    assert!(T::filter().contains_sensitive("a bad word", &trie));
+
     // Text Tool
     let text = T::text().trim(" hello ");
     assert_eq!(text, "hello");
@@ -46,4 +56,12 @@ fn test_facade_extra_tools() {
     let csv = T::csv().parse("a,b\n1,2").unwrap();
     assert_eq!(csv.len(), 1); // Header "a,b" is skipped by default in csv crate
     assert_eq!(csv[0][0], "1");
+
+    // Config Tool
+    T::config().load_env().ok();
+
+    // Cache Tool
+    let cache = T::cache();
+    cache.put("test_key", "test_val");
+    assert_eq!(cache.get("test_key").unwrap(), "test_val");
 }

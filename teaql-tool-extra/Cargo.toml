@@ -8,3 +8,8 @@ teaql-tool-core = { path = "../teaql-tool-core" }
 rand = "0.10.1"
 aes-gcm = "0.10.3"
 csv = "1.4.0"
+reqwest = { version = "0.13.4", features = ["blocking"] }
+jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
+dotenvy = "0.15.7"
+moka = { version = "0.12.15", features = ["sync"] }
+serde = { version = "1.0.228", features = ["derive"] }

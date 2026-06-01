@@ -156,6 +156,48 @@ Parse and generate CSV formats instantly.
 let data = T::csv().parse("name,age\nAlice,30").unwrap();
 ```
 
+### 14. `T::http()` (Requires `extra` feature)
+Simplified synchronous HTTP client for quick network requests.
+```rust
+let html = T::http().get("https://example.com").unwrap();
+```
+
+### 15. `T::jwt()` (Requires `extra` feature)
+Sign and verify JSON Web Tokens effortlessly.
+```rust
+let token = T::jwt().sign(&my_claims, "secret_key").unwrap();
+let claims: MyClaims = T::jwt().verify(&token, "secret_key").unwrap();
+```
+
+### 16. `T::system()`
+Read system properties and environment variables safely.
+```rust
+let env_port = T::system().env_or("PORT", "8080");
+let os_name = T::system().os();
+```
+
+### 17. `T::config()` (Requires `extra` feature)
+Load configuration securely from `.env` and other sources.
+```rust
+T::config().load_env().ok(); // Loads variables into the environment
+let db_url = T::config().get_env("DATABASE_URL").unwrap();
+```
+
+### 18. `T::cache()` (Requires `extra` feature)
+In-memory fast caching mechanism.
+```rust
+let cache = T::cache(); // Retain the instance
+cache.put("user_123", "Alice");
+let user = cache.get("user_123").unwrap();
+```
+
+### 19. `T::filter()`
+Sensitive word filtering using Aho-Corasick Deterministic Finite Automaton (DFA).
+```rust
+let trie = T::filter().build_trie(&["badword", "spam"]);
+let is_clean = !T::filter().contains_sensitive("hello world", &trie);
+```
+
 ---
 
 ## 🏗️ Architecture
