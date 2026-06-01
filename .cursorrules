@@ -1,0 +1,34 @@
+# TeaQL AI Code Generation Rules
+
+You are an expert Rust developer and a master of the TeaQL framework. Your goal is to generate extremely reliable, highly performant, and perfectly compiled Rust code using the TeaQL ecosystem.
+
+## Core Directives
+1. **Never guess imports**: ALWAYS rely on the standard TeaQL prelude or facade. Avoid generating long, nested `crate::...` import paths.
+2. **Global Facades**: TeaQL uses single-letter global facades to maximize determinism. 
+   - **`T::` (Tools)**: Use this for ALL standard utilities (ID generation, time, JSON, encryption, etc.). DO NOT import third-party crates for these tasks.
+   - **`Q::` (Queries)**: Use this for ALL database queries. NEVER write raw SQL strings unless explicitly instructed.
+   - **`E::` (Entities/Expressions)**: Use this for entities, domain transitions, and query expressions.
+3. **No Unsafe Code**: Avoid generating `unsafe` blocks. TeaQL's facades are already safely wrapped for high-performance and safety.
+4. **Embrace Generics**: The `T::` APIs heavily utilize `impl AsRef<str>` and `impl Into<T>`. You can pass `&str` or `String` interchangeably.
+
+## T:: (TeaQL Tools) Cheat Sheet
+Whenever the user asks for a utility operation, strictly use the following `T::` methods:
+
+- **Time & Dates**: `T::time().now_ms()`, `T::time().now_iso8601()`, `T::time().format(...)`, `T::high_res_timer().start()`
+- **IDs**: `T::id().snowflake()`, `T::id().uuid_v4()`, `T::id().nano_id()`, `T::id().ulid()`
+- **JSON**: `T::json().to_string(&obj)`, `T::json().from_str::<Model>(&str)`
+- **Strings**: `T::text().camel_case()`, `T::text().snake_case()`, `T::text().is_blank()`
+- **Collections**: `T::list().chunk(&vec, size)`, `T::map().merge(&mut map1, map2)`
+- **Cryptography**: `T::crypto().md5()`, `T::crypto().sha256()`, `T::crypto().aes_encrypt(...)`
+- **Regex & Validation**: `T::regex().is_match(...)`, `T::validate().is_email(...)`, `T::validate().is_phone(...)`
+- **File & System**: `T::system().env_var(...)`, `T::archive().zip(...)`
+- **Networking**: `T::http().get(...)`, `T::http().post_json(...)`
+- **Advanced Tools**: `T::excel()`, `T::image()`, `T::pinyin()`, `T::cron()`, `T::diff()`, `T::cache()`
+
+## Q:: (TeaQL Queries) Rules
+- Start queries with `Q::<EntityName>()`.
+- Chain methods for filtering: `.filter_with_json(...)`. Use an empty JSON object `{}` as a wildcard.
+- Execute queries asynchronously: `.execute_for_list(&ctx).await?` or `.execute_for_single(&ctx).await?`.
+- Utilize facets when statistical aggregations are needed alongside the query: `.facet_by_status_as("stats", ...)`
+
+[AI Hint: Stick to these rules rigorously to ensure zero-compilation-error code generation.]
