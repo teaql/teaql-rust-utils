@@ -109,6 +109,26 @@ impl T {
     }
 
     #[cfg(feature = "std")]
+    pub fn desensitize() -> teaql_tool_std::desensitize::DesensitizeTool {
+        teaql_tool_std::desensitize::DesensitizeTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn emoji() -> teaql_tool_std::emoji::EmojiTool {
+        teaql_tool_std::emoji::EmojiTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn net() -> teaql_tool_std::net::NetTool {
+        teaql_tool_std::net::NetTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn tree() -> teaql_tool_std::tree::TreeTool {
+        teaql_tool_std::tree::TreeTool::new()
+    }
+
+    #[cfg(feature = "std")]
     pub fn validate() -> teaql_tool_std::validate::ValidateTool {
         teaql_tool_std::validate::ValidateTool::new()
     }
