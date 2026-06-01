@@ -398,3 +398,34 @@ This provides:
 * Stable long-term architecture
 
 Ultimately, TeaQL Tool becomes the trusted common toolbox for business programming.
+
+folders
+
+docs/
+ ├── teaql-tool-overview.md
+ ├── teaql-tool-core.md
+ ├── teaql-tool-text.md
+ ├── teaql-tool-time.md
+ ├── teaql-tool-json.md
+ ├── teaql-tool-id.md
+ ├── teaql-tool-decimal.md
+ ├── teaql-tool-money.md
+ ├── teaql-tool-regex.md
+ ├── teaql-tool-code.md
+ ├── teaql-tool-hash.md
+ ├── teaql-tool-validate.md
+ ├── teaql-tool-list.md
+ ├── teaql-tool-map.md
+ ├── teaql-tool-url.md
+ ├── teaql-tool-email.md
+ ├── teaql-tool-phone.md
+ ├── teaql-tool-address.md
+ ├── teaql-tool-geo.md
+ ├── teaql-tool-csv.md
+ ├── teaql-tool-excel.md
+ ├── teaql-tool-image.md
+ ├── teaql-tool-unit.md
+ ├── teaql-tool-crypto.md
+ ├── teaql-tool-random.md
+ ├── teaql-tool-diff.md
+ └── teaql-tool-template.md
