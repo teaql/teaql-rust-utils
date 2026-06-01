@@ -17,6 +17,13 @@ fn test_facade_standard_tools() {
     // Validate Tool
     assert!(T::validate().email("test@teaql.com"));
 
+    // Color Tool
+    assert_eq!(T::color().alice_blue(), "#F0F8FF");
+    
+    // DateRange Tool
+    let today = T::daterange().today();
+    assert!(today.start <= today.end);
+
     // System Tool
     assert!(!T::system().os().is_empty());
 

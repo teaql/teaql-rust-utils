@@ -156,7 +156,20 @@ Parse and generate CSV formats instantly.
 let data = T::csv().parse("name,age\nAlice,30").unwrap();
 ```
 
-### 14. `T::http()` (Requires `extra` feature)
+### 14. `T::color()`
+Get hex codes for standard named colors easily.
+```rust
+let hex = T::color().alice_blue(); // "#F0F8FF"
+```
+
+### 15. `T::daterange()`
+Generate common time ranges instantly.
+```rust
+let today = T::daterange().today();
+println!("Start: {}, End: {}", today.start, today.end);
+```
+
+### 16. `T::http()` (Requires `extra` feature)
 Simplified synchronous HTTP client for quick network requests.
 ```rust
 let html = T::http().get("https://example.com").unwrap();

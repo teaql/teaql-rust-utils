@@ -49,6 +49,16 @@ impl T {
     }
 
     #[cfg(feature = "std")]
+    pub fn color() -> teaql_tool_std::color::ColorTool {
+        teaql_tool_std::color::ColorTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn daterange() -> teaql_tool_std::daterange::DateRangeTool {
+        teaql_tool_std::daterange::DateRangeTool::new()
+    }
+
+    #[cfg(feature = "std")]
     pub fn system() -> teaql_tool_std::system::SystemTool {
         teaql_tool_std::system::SystemTool::new()
     }

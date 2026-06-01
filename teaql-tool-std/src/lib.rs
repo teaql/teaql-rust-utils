@@ -1,4 +1,6 @@
 pub mod codec;
+pub mod color;
+pub mod daterange;
 pub mod decimal;
 pub mod filter;
 pub mod hash;
