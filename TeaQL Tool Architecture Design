@@ -1,0 +1,400 @@
+# TeaQL Tool Architecture Design
+
+## Motivation
+
+As TeaQL evolves from a query framework into a business programming platform, we need a unified and constrained tool surface for both developers and AI coding agents.
+
+Instead of allowing arbitrary access to thousands of Rust crates, TeaQL introduces a stateless tool registry:
+
+```rust
+T::time().now()
+T::json().parse("{}")
+T::text().trim(" hello ")
+T::id().uuid()
+```
+
+The goal is not to replace Rust's ecosystem.
+
+The goal is to provide a stable, readable, AI-friendly, and implementation-independent API surface.
+
+---
+
+# Design Principles
+
+## 1. Stateless
+
+Tools should not depend on business state.
+
+Good:
+
+```rust
+T::time().now()
+T::text().trim(s)
+T::json().parse(s)
+```
+
+Bad:
+
+```rust
+T::auth().current_user()
+T::tenant().current()
+T::workflow().move_to(...)
+```
+
+Business state belongs to:
+
+```rust
+Q:: Query
+E:: Entity
+A:: Action
+L:: Lifecycle / Logic
+```
+
+not Tool.
+
+---
+
+## 2. Domain Neutral
+
+Tools represent common knowledge.
+
+Examples:
+
+```rust
+T::time()
+T::json()
+T::text()
+T::decimal()
+T::regex()
+```
+
+Tools should not contain industry-specific knowledge:
+
+```rust
+T::gas()
+T::erp()
+T::invoice()
+```
+
+Those belong to domain modules.
+
+---
+
+## 3. AI Friendly
+
+A coding agent should only need to understand a small set of namespaces:
+
+```rust
+Q::
+E::
+A::
+L::
+T::
+```
+
+instead of thousands of third-party APIs.
+
+This dramatically reduces API entropy.
+
+---
+
+## 4. Stable API Surface
+
+Business code depends on TeaQL APIs.
+
+TeaQL internally chooses implementations.
+
+```rust
+T::json().parse(...)
+```
+
+may use:
+
+```rust
+serde_json
+simd-json
+other implementation
+```
+
+without affecting business code.
+
+---
+
+# Core Tool Categories
+
+## Minimal Profile
+
+Available by default.
+
+```rust
+T::time()
+T::id()
+T::decimal()
+T::text()
+T::json()
+T::regex()
+T::code()
+T::hash()
+```
+
+These cover the majority of business applications.
+
+---
+
+## Extended Profile
+
+Optional features.
+
+```rust
+T::money()
+T::validate()
+T::list()
+T::map()
+T::csv()
+T::excel()
+T::image()
+T::unit()
+T::geo()
+T::crypto()
+T::template()
+T::random()
+T::diff()
+```
+
+---
+
+# Crate Architecture
+
+## teaql-tool-core
+
+Contains only:
+
+```text
+Traits
+Interfaces
+Errors
+Common Value Types
+Feature Registration
+```
+
+No heavy dependencies.
+
+---
+
+## teaql-tool-std
+
+Contains commonly used tools:
+
+```text
+text
+json
+time
+id
+decimal
+regex
+code
+hash
+```
+
+Expected to be the default package.
+
+---
+
+## teaql-tool-extra
+
+Contains optional heavy features:
+
+```text
+csv
+excel
+image
+geo
+unit
+template
+crypto
+random
+diff
+```
+
+Only loaded when required.
+
+---
+
+## teaql-tool
+
+Facade crate.
+
+Provides:
+
+```rust
+T::time()
+T::json()
+T::text()
+```
+
+and re-exports enabled implementations.
+
+---
+
+# Feature Gates
+
+Example:
+
+```toml
+[features]
+
+default = ["minimal"]
+
+minimal = [
+    "text",
+    "json",
+    "time",
+    "id",
+    "decimal",
+    "regex",
+    "code",
+    "hash"
+]
+
+business = [
+    "minimal",
+    "money",
+    "validate",
+    "list",
+    "map"
+]
+
+data = [
+    "minimal",
+    "csv",
+    "excel",
+    "diff"
+]
+
+full = [
+    "business",
+    "data",
+    "image",
+    "geo",
+    "unit",
+    "crypto",
+    "template",
+    "random"
+]
+```
+
+---
+
+# Example Mapping
+
+## Time
+
+```rust
+T::time().now()
+T::time().today()
+T::time().parse_date(...)
+```
+
+Possible implementation:
+
+```text
+chrono
+time
+```
+
+---
+
+## JSON
+
+```rust
+T::json().parse(...)
+T::json().stringify(...)
+T::json().diff(...)
+```
+
+Possible implementation:
+
+```text
+serde_json
+json_patch
+```
+
+---
+
+## ID
+
+```rust
+T::id().uuid()
+T::id().ulid()
+T::id().snowflake()
+```
+
+Possible implementation:
+
+```text
+uuid
+ulid
+nanoid
+```
+
+---
+
+## Excel
+
+```rust
+T::excel().read(...)
+T::excel().write(...)
+```
+
+Possible implementation:
+
+```text
+calamine
+rust_xlsxwriter
+```
+
+---
+
+## Image
+
+```rust
+T::image().resize(...)
+T::image().thumbnail(...)
+```
+
+Possible implementation:
+
+```text
+image
+fast_image_resize
+```
+
+---
+
+# Long-Term Vision
+
+TeaQL Tool is not a utility library.
+
+It is a constrained programming surface.
+
+Developers and AI agents interact with:
+
+```rust
+Q::
+E::
+A::
+L::
+T::
+```
+
+instead of directly depending on thousands of third-party APIs.
+
+This provides:
+
+* Better readability
+* Better portability
+* Better AI coding experience
+* Easier dependency management
+* Stable long-term architecture
+
+Ultimately, TeaQL Tool becomes the trusted common toolbox for business programming.
