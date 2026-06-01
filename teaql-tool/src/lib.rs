@@ -109,6 +109,11 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
+    pub fn archive() -> teaql_tool_extra::archive::ArchiveTool {
+        teaql_tool_extra::archive::ArchiveTool::new()
+    }
+
+    #[cfg(feature = "extra")]
     pub fn barcode() -> teaql_tool_extra::barcode::BarcodeTool {
         teaql_tool_extra::barcode::BarcodeTool::new()
     }
@@ -119,8 +124,23 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
+    pub fn clipboard() -> teaql_tool_extra::clipboard::ClipboardTool {
+        teaql_tool_extra::clipboard::ClipboardTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn cmd() -> teaql_tool_extra::cmd::CmdTool {
+        teaql_tool_extra::cmd::CmdTool::new()
+    }
+
+    #[cfg(feature = "extra")]
     pub fn config() -> teaql_tool_extra::config::ConfigTool {
         teaql_tool_extra::config::ConfigTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn cron() -> teaql_tool_extra::cron::CronTool {
+        teaql_tool_extra::cron::CronTool::new()
     }
 
     #[cfg(feature = "extra")]
@@ -149,6 +169,11 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
+    pub fn html() -> teaql_tool_extra::html::HtmlTool {
+        teaql_tool_extra::html::HtmlTool::new()
+    }
+
+    #[cfg(feature = "extra")]
     pub fn http() -> teaql_tool_extra::http::HttpTool {
         teaql_tool_extra::http::HttpTool::new()
     }
@@ -164,8 +189,18 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
+    pub fn kv() -> teaql_tool_extra::kv::KvTool {
+        teaql_tool_extra::kv::KvTool::new()
+    }
+
+    #[cfg(feature = "extra")]
     pub fn phone() -> teaql_tool_extra::phone::PhoneTool {
         teaql_tool_extra::phone::PhoneTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn pinyin() -> teaql_tool_extra::pinyin::PinyinTool {
+        teaql_tool_extra::pinyin::PinyinTool::new()
     }
 
     #[cfg(feature = "extra")]
