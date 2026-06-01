@@ -23,15 +23,13 @@
 
 ## 🎯 Motivation
 
-When developing business applications or working with AI coding agents, you frequently need essential tools: parsing dates, generating UUIDs, calculating exact monetary values, reading JSON, checking emails, or encrypting data. 
+When developing business applications, quick automation scripts, or working with AI coding agents, you frequently need essential tools: parsing dates, generating UUIDs, calculating exact monetary values, reading JSON, checking emails, or encrypting data. 
 
-In the Rust ecosystem, this normally requires hunting down dozens of different crates (`chrono`, `uuid`, `rust_decimal`, `regex`, `base64`, `aes-gcm`, etc.), learning each of their unique APIs, and dealing with potential breaking changes. 
+In the Rust ecosystem, this normally requires hunting down dozens of different crates (`chrono`, `uuid`, `rust_decimal`, `regex`, `base64`, `reqwest`, `zip`, etc.), learning each of their unique APIs, and dealing with potential breaking changes. 
 
 **TeaQL Tool solves this by providing the `T::` Facade.** 
 
 It gathers the most robust, community-standard crates and wraps them in a completely **unified, stateless, and highly predictable API**. This drastically lowers the cognitive load for developers and makes it incredibly easy for AI agents to generate correct Rust code without needing to constantly learn new third-party library updates.
-
----
 
 ## 📦 Installation
 
@@ -42,205 +40,116 @@ Add `teaql-tool` to your `Cargo.toml`. You can selectively opt into features dep
 # For the standard lightweight utilities
 teaql-tool = { version = "0.1", features = ["std"] }
 
-# For everything (including cryptography, random generation, csv parsing)
+# For everything (including network, crypto, images, web scraping, and watchers)
 teaql-tool = { version = "0.1", features = ["std", "extra"] }
 ```
 
 ---
 
-## 🛠️ Feature Overview & Examples
+## 🛠️ Module Overview & Examples
 
-The facade exposes a static struct `T`, which you can use to immediately access any module.
+The facade exposes a static struct `T`, which you can use to immediately access any module. Simply `use teaql_tool::T;`.
+
+### 🧰 Core Data & Logic (`teaql-tool-std`)
+
+- **`T::id()`**: Instantly generate `uuid()`, `ulid()`, or `nanoid()`.
+- **`T::time()`**: Ergonomic timezone-aware math and formatting powered by `chrono`.
+  ```rust
+  let tomorrow = T::time().add_days(&T::time().now(), 1);
+  ```
+- **`T::money()`**: Exact monetary division and math without floating-point errors.
+- **`T::decimal()`**: Arbitrary precision math.
+- **`T::codec()`**: Base64, Hex, URL-encoding in one line.
+  ```rust
+  let encoded = T::codec().base64_encode(b"Hello");
+  ```
+- **`T::text()`**: Case conversions (snake, camel, kebab), truncations, and padding.
+- **`T::json()`**: Parse to/from JSON, apply JSON Patches, and query via JSON Pointers.
+- **`T::regex()`**: Extract patterns or validate regex without manual compilation.
+- **`T::list()` / `T::map()`**: Quick iterators, grouping, sorting, and map inversions.
+- **`T::diff()`**: Compare text strings to get unified diffs.
+- **`T::unit()`**: Convert bytes (KB/MB) and durations.
+- **`T::color()`**: Convert RGB, HEX, and HSL.
+
+### 🚀 Automation & Scripts (`teaql-tool-extra`)
+
+The `extra` feature pulls in heavier dependencies designed to give your scripts superpowers.
+
+- **`T::cmd()`**: Execute shell commands easily with built-in timeouts.
+  ```rust
+  let (stdout, stderr, code) = T::cmd().run_with_timeout("ls -al", 5).unwrap();
+  ```
+- **`T::server()`**: Start a static file HTTP server in one line (blocking).
+  ```rust
+  T::server().serve_dir("./public", 8080).unwrap();
+  ```
+- **`T::proxy()`**: Start a transparent reverse proxy.
+  ```rust
+  T::proxy().start(8081, "http://127.0.0.1:3000").unwrap();
+  ```
+- **`T::watcher()`**: Monitor filesystem changes recursively.
+  ```rust
+  T::watcher().watch("./src", |changed_path| println!("Changed: {}", changed_path)).unwrap();
+  ```
+- **`T::archive()`**: One-line Zip creation and extraction.
+  ```rust
+  T::archive().zip_dir("./src", "backup.zip").unwrap();
+  ```
+- **`T::html()`**: Scrape web content using CSS selectors.
+  ```rust
+  let links = T::html().select_attr(html_str, "a.active", "href").unwrap();
+  ```
+- **`T::cron()`**: Run background scheduling with cron expressions.
+  ```rust
+  T::cron().schedule("0 * * * * *", || println!("Ran every minute!")).unwrap();
+  ```
+- **`T::kv()`**: Open an embedded, pure-Rust key-value database (`sled`).
+  ```rust
+  let db = T::kv().open("./local.db").unwrap();
+  db.insert("key", "value").unwrap();
+  ```
+- **`T::clipboard()`**: Read and write cross-platform clipboard content.
+- **`T::pinyin()`**: Convert Chinese characters to Pinyin effortlessly.
+
+### 🌍 Business & Integration (`teaql-tool-extra`)
+
+- **`T::http()`**: Fire off GET/POST requests without setting up async clients manually.
+- **`T::crypto()`**: Symmetrical (`aes-gcm`), asymmetrical (`rsa`), and HMAC signatures.
+- **`T::jwt()`**: Sign and verify JSON Web Tokens.
+- **`T::email()`**: Construct and send emails over SMTP.
+- **`T::excel()` / `T::csv()`**: Parse spreadsheets directly into lists of structures.
+- **`T::image()`**: Resize, crop, and convert image formats.
+- **`T::barcode()` / `T::qrcode()`**: Generate barcodes and QRCodes as PNG or SVG.
+- **`T::template()`**: Render Tera templates with JSON data.
+
+---
+
+## 💻 Full Scripting Example
+
+With `teaql-tool`, you can write incredibly concise utilities. Here is an example of checking a server, saving the status to a local DB, and writing to the clipboard:
 
 ```rust
 use teaql_tool::T;
+
+fn main() {
+    // 1. Fetch data from a URL
+    let html = T::http().get("https://rust-lang.org").unwrap();
+    
+    // 2. Extract specific text using CSS selectors
+    let titles = T::html().select_text(&html, "title").unwrap();
+    let site_title = &titles[0];
+
+    // 3. Save it to a lightweight local database
+    let db = T::kv().open("./scraper.db").unwrap();
+    db.insert("latest_title", site_title).unwrap();
+
+    // 4. Copy to your OS clipboard
+    T::clipboard().write_text(site_title).unwrap();
+
+    println!("Scraped: {}", site_title);
+}
 ```
 
-### 1. `T::id()` - Identifiers
-Generate unique IDs instantly without wrestling with crate features.
-```rust
-let uuid = T::id().uuid();      // "550e8400-e29b-41d4-a716-446655440000"
-let ulid = T::id().ulid();      // Lexicographically sortable ID
-let nanoid = T::id().nanoid();  // URL-friendly string ID
-```
+## 📜 License
 
-### 2. `T::time()` - Time and Dates (Powered by `chrono`)
-Extremely ergonomic timezone-aware date operations.
-```rust
-let now = T::time().now();
-let tokyo_time = T::time().to_timezone(&now, "Asia/Tokyo").unwrap();
-let formatted = T::time().format(&tokyo_time, "%Y-%m-%d %H:%M:%S");
-
-// Date math
-let tomorrow = T::time().add_days(&now, 1);
-```
-
-### 3. `T::money()` - Exact Monetary Math
-Eliminate floating-point errors and "missing penny" issues when splitting funds.
-```rust
-let bill = T::money().of("100.00", "USD").unwrap();
-let tip = T::money().of("15.50", "USD").unwrap();
-let total = T::money().add(&bill, &tip).unwrap();
-
-// Split exactly into ratios without losing a cent
-let ratios = vec![1, 2]; // e.g., 1/3 and 2/3 splits
-let split = T::money().allocate(&total, ratios).unwrap();
-```
-
-### 4. `T::decimal()` - Arbitrary Precision Math
-For exact business calculations.
-```rust
-let a = T::decimal().of("10.5").unwrap();
-let b = T::decimal().of("2.0").unwrap();
-let result = T::decimal().div(a, b).unwrap(); // 5.25
-```
-
-### 5. `T::codec()` - Encoding & Decoding
-No more hunting for `base64` or `urlencoding` logic.
-```rust
-let b64 = T::codec().base64_encode("Hello World");
-let hex = T::codec().hex_encode([0xFF, 0xAA]);
-let url = T::codec().url_encode("https://example.com/?q=teaql");
-let safe_html = T::codec().html_escape("<script>alert('1')</script>");
-```
-
-### 6. `T::hash()` - Cryptographic Hashes
-```rust
-let sha256_hash = T::hash().sha256(b"secret");
-let fast_hash = T::hash().blake3(b"data stream");
-```
-
-### 7. `T::validate()` - Data Validation
-Quickly sanitize user input.
-```rust
-assert!(T::validate().email("user@example.com"));
-assert!(T::validate().url("https://teaql.com"));
-assert!(T::validate().min_length("password123", 8));
-```
-
-### 8. `T::json()` - Dynamic JSON Manipulation
-```rust
-let mut doc = T::json().parse(r#"{"user": {"name": "Alice"}}"#).unwrap();
-T::json().set(&mut doc, "/user/age", serde_json::json!(30)).unwrap();
-```
-
-### 9. `T::regex()` - Pattern Matching
-```rust
-let is_match = T::regex().matches("^[a-z]+$", "hello");
-let replaced = T::regex().replace_all("[0-9]+", "foo123bar456", "X");
-```
-
-### 10. `T::text()` - String Utilities
-```rust
-let snake = T::text().to_snake_case("camelCaseString");
-let camel = T::text().to_camel_case("snake_case_string");
-```
-
-### 11. `T::crypto()` (Requires `extra` feature)
-State-of-the-art AES-256-GCM symmetric encryption made dead simple.
-```rust
-let key = T::crypto().generate_key(); // 32 bytes
-let encrypted = T::crypto().encrypt(b"My confidential data", &key).unwrap();
-let decrypted = T::crypto().decrypt(&encrypted, &key).unwrap();
-```
-
-### 12. `T::random()` (Requires `extra` feature)
-```rust
-let random_int = T::random().int(1, 100);
-let chance = T::random().boolean();
-```
-
-### 13. `T::csv()` (Requires `extra` feature)
-Parse and generate CSV formats instantly.
-```rust
-let data = T::csv().parse("name,age\nAlice,30").unwrap();
-```
-
-### 14. `T::i18n()`
-Lightweight multi-language localization (i18n) tool supporting JSON loading.
-```rust
-let mut i18n = T::i18n();
-i18n.load_json("zh_CN", r#"{"greeting": "你好, {name}!"}"#).unwrap();
-let msg = i18n.tf("zh_CN", "greeting", &[("name", "Alice")]); // "你好, Alice!"
-```
-
-### 15. `T::color()`
-Get hex codes for standard named colors easily.
-```rust
-let hex = T::color().alice_blue(); // "#F0F8FF"
-```
-
-### 15. `T::daterange()`
-Generate common time ranges instantly.
-```rust
-let today = T::daterange().today();
-println!("Start: {}, End: {}", today.start, today.end);
-```
-
-### 16. `T::http()` (Requires `extra` feature)
-Simplified synchronous HTTP client for quick network requests.
-```rust
-let html = T::http().get("https://example.com").unwrap();
-```
-
-### 15. `T::jwt()` (Requires `extra` feature)
-Sign and verify JSON Web Tokens effortlessly.
-```rust
-let token = T::jwt().sign(&my_claims, "secret_key").unwrap();
-let claims: MyClaims = T::jwt().verify(&token, "secret_key").unwrap();
-```
-
-### 16. `T::system()`
-Read system properties and environment variables safely.
-```rust
-let env_port = T::system().env_or("PORT", "8080");
-let os_name = T::system().os();
-```
-
-### 17. `T::config()` (Requires `extra` feature)
-Load configuration securely from `.env` and other sources.
-```rust
-T::config().load_env().ok(); // Loads variables into the environment
-let db_url = T::config().get_env("DATABASE_URL").unwrap();
-```
-
-### 18. `T::cache()` (Requires `extra` feature)
-In-memory fast caching mechanism.
-```rust
-let cache = T::cache(); // Retain the instance
-cache.put("user_123", "Alice");
-let user = cache.get("user_123").unwrap();
-```
-
-### 19. `T::filter()`
-Sensitive word filtering using Aho-Corasick Deterministic Finite Automaton (DFA).
-```rust
-let trie = T::filter().build_trie(&["badword", "spam"]);
-let is_clean = !T::filter().contains_sensitive("hello world", &trie);
-```
-
----
-
-## 🏗️ Architecture
-
-The project is broken into a workspace to maintain fast compile times:
-
-1. **`teaql-tool-core`**: The bedrock. Defines `TeaQLToolError` and the unified `Result` type.
-2. **`teaql-tool-std`**: The "Standard Profile". Contains all lightweight, high-usage modules (`id`, `time`, `codec`, `hash`, `validate`, `decimal`, `money`, `regex`, `text`, `json`).
-3. **`teaql-tool-extra`**: The "Extended Profile". Contains heavier dependencies like cryptography (`aes-gcm`), data formats (`csv`), and random number generators (`rand`).
-4. **`teaql-tool`**: The API Facade. Re-exports the underlying tools into the clean `T::` namespace based on active Cargo features.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! If you want to add a new tool to the `T::` namespace:
-1. Identify if it belongs in `std` (lightweight/common) or `extra` (heavy/domain-specific).
-2. Create the wrapper in the respective crate.
-3. Ensure the tool exposes a stateless struct and implements `new()` and `Default`.
-4. Register the tool in `teaql-tool/src/lib.rs` under the appropriate feature flag.
-5. Write tests using the Facade API (`tests/facade_test.rs`).
-
-## 📄 License
-
-This project is licensed under the Apache License 2.0.
+This project is licensed under the Apache License, Version 2.0.
