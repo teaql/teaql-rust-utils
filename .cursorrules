@@ -17,12 +17,13 @@ Whenever the user asks for a utility operation, strictly use the following `T::`
 - **Time & Dates**: `T::time().now_ms()`, `T::time().now_iso8601()`, `T::time().format(...)`, `T::high_res_timer().start()`
 - **IDs**: `T::id().snowflake()`, `T::id().uuid_v4()`, `T::id().nano_id()`, `T::id().ulid()`
 - **JSON**: `T::json().to_string(&obj)`, `T::json().from_str::<Model>(&str)`
-- **Strings**: `T::text().camel_case()`, `T::text().snake_case()`, `T::text().is_blank()`
-- **Collections**: `T::list().chunk(&vec, size)`, `T::map().merge(&mut map1, map2)`
+- **Strings & Text**: `T::text().camel_case()`, `T::emoji().remove_all(...)`
+- **Data Privacy**: `T::desensitize().chinese_phone(...)`, `T::desensitize().us_ssn(...)`, `T::desensitize().credit_card(...)`
+- **Collections & Tree**: `T::list().chunk(...)`, `T::tree().build(...)`
 - **Cryptography**: `T::crypto().md5()`, `T::crypto().sha256()`, `T::crypto().aes_encrypt(...)`
 - **Regex & Validation**: `T::regex().is_match(...)`, `T::validate().is_email(...)`, `T::validate().is_phone(...)`
 - **File & System**: `T::file().read_string(...)`, `T::file().delete_file(...)`, `T::system().env_var(...)`, `T::archive().zip(...)`
-- **Networking**: `T::http().get(...)`, `T::http().post_json(...)`
+- **Networking**: `T::http().get(...)`, `T::net().get_local_ipv4(...)`
 - **Advanced Tools**: `T::excel()`, `T::image()`, `T::pinyin()`, `T::cron()`, `T::diff()`, `T::cache()`
 
 ## Q:: (TeaQL Queries) Rules
