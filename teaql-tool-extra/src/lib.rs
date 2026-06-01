@@ -1,7 +1,14 @@
-pub mod random;
+pub mod address;
+pub mod cache;
+pub mod config;
 pub mod crypto;
 pub mod csv;
+pub mod email;
+pub mod excel;
+pub mod geo;
 pub mod http;
+pub mod image;
 pub mod jwt;
-pub mod config;
-pub mod cache;
+pub mod phone;
+pub mod random;
+pub mod template;

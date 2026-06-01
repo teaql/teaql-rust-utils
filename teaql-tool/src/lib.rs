@@ -59,13 +59,38 @@ impl T {
     }
 
     #[cfg(feature = "std")]
+    pub fn diff() -> teaql_tool_std::diff::DiffTool {
+        teaql_tool_std::diff::DiffTool::new()
+    }
+
+    #[cfg(feature = "std")]
     pub fn i18n() -> teaql_tool_std::i18n::I18nTool {
         teaql_tool_std::i18n::I18nTool::new()
     }
 
     #[cfg(feature = "std")]
+    pub fn list() -> teaql_tool_std::list::ListTool {
+        teaql_tool_std::list::ListTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn map() -> teaql_tool_std::map::MapTool {
+        teaql_tool_std::map::MapTool::new()
+    }
+
+    #[cfg(feature = "std")]
     pub fn system() -> teaql_tool_std::system::SystemTool {
         teaql_tool_std::system::SystemTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn unit() -> teaql_tool_std::unit::UnitTool {
+        teaql_tool_std::unit::UnitTool::new()
+    }
+
+    #[cfg(feature = "std")]
+    pub fn url() -> teaql_tool_std::url::UrlTool {
+        teaql_tool_std::url::UrlTool::new()
     }
 
     #[cfg(feature = "std")]
@@ -79,8 +104,18 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
-    pub fn random() -> teaql_tool_extra::random::RandomTool {
-        teaql_tool_extra::random::RandomTool::new()
+    pub fn address() -> teaql_tool_extra::address::AddressTool {
+        teaql_tool_extra::address::AddressTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn cache() -> teaql_tool_extra::cache::CacheTool {
+        teaql_tool_extra::cache::CacheTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn config() -> teaql_tool_extra::config::ConfigTool {
+        teaql_tool_extra::config::ConfigTool::new()
     }
 
     #[cfg(feature = "extra")]
@@ -94,8 +129,28 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
+    pub fn email() -> teaql_tool_extra::email::EmailTool {
+        teaql_tool_extra::email::EmailTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn excel() -> teaql_tool_extra::excel::ExcelTool {
+        teaql_tool_extra::excel::ExcelTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn geo() -> teaql_tool_extra::geo::GeoTool {
+        teaql_tool_extra::geo::GeoTool::new()
+    }
+
+    #[cfg(feature = "extra")]
     pub fn http() -> teaql_tool_extra::http::HttpTool {
         teaql_tool_extra::http::HttpTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn image() -> teaql_tool_extra::image::ImageTool {
+        teaql_tool_extra::image::ImageTool::new()
     }
 
     #[cfg(feature = "extra")]
@@ -104,12 +159,17 @@ impl T {
     }
 
     #[cfg(feature = "extra")]
-    pub fn config() -> teaql_tool_extra::config::ConfigTool {
-        teaql_tool_extra::config::ConfigTool::new()
+    pub fn phone() -> teaql_tool_extra::phone::PhoneTool {
+        teaql_tool_extra::phone::PhoneTool::new()
     }
 
     #[cfg(feature = "extra")]
-    pub fn cache() -> teaql_tool_extra::cache::CacheTool {
-        teaql_tool_extra::cache::CacheTool::new()
+    pub fn random() -> teaql_tool_extra::random::RandomTool {
+        teaql_tool_extra::random::RandomTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn template() -> teaql_tool_extra::template::TemplateTool {
+        teaql_tool_extra::template::TemplateTool::new()
     }
 }
