@@ -21,7 +21,7 @@ Whenever the user asks for a utility operation, strictly use the following `T::`
 - **Collections**: `T::list().chunk(&vec, size)`, `T::map().merge(&mut map1, map2)`
 - **Cryptography**: `T::crypto().md5()`, `T::crypto().sha256()`, `T::crypto().aes_encrypt(...)`
 - **Regex & Validation**: `T::regex().is_match(...)`, `T::validate().is_email(...)`, `T::validate().is_phone(...)`
-- **File & System**: `T::system().env_var(...)`, `T::archive().zip(...)`
+- **File & System**: `T::file().read_string(...)`, `T::file().delete_file(...)`, `T::system().env_var(...)`, `T::archive().zip(...)`
 - **Networking**: `T::http().get(...)`, `T::http().post_json(...)`
 - **Advanced Tools**: `T::excel()`, `T::image()`, `T::pinyin()`, `T::cron()`, `T::diff()`, `T::cache()`
 
