@@ -182,4 +182,19 @@ impl T {
     pub fn template() -> teaql_tool_extra::template::TemplateTool {
         teaql_tool_extra::template::TemplateTool::new()
     }
+
+    #[cfg(feature = "extra")]
+    pub fn proxy() -> teaql_tool_extra::proxy::ProxyTool {
+        teaql_tool_extra::proxy::ProxyTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn server() -> teaql_tool_extra::server::ServerTool {
+        teaql_tool_extra::server::ServerTool::new()
+    }
+
+    #[cfg(feature = "extra")]
+    pub fn watcher() -> teaql_tool_extra::watcher::WatcherTool {
+        teaql_tool_extra::watcher::WatcherTool::new()
+    }
 }
