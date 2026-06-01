@@ -4788,6 +4788,7 @@ dependencies = [
  "iso_currency",
  "json-patch",
  "jsonschema",
+ "libc",
  "nanoid",
  "percent-encoding",
  "regex",
@@ -4802,6 +4803,7 @@ dependencies = [
  "url",
  "urlencoding",
  "uuid",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

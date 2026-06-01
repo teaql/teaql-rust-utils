@@ -49,6 +49,11 @@ impl T {
     }
 
     #[cfg(feature = "std")]
+    pub fn high_res_timer() -> teaql_tool_std::high_res_timer::HighResTimerTool {
+        teaql_tool_std::high_res_timer::HighResTimerTool::new()
+    }
+
+    #[cfg(feature = "std")]
     pub fn color() -> teaql_tool_std::color::ColorTool {
         teaql_tool_std::color::ColorTool::new()
     }

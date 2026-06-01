@@ -18,6 +18,7 @@ html-escape = "0.2.13"
 iso_currency = "0.5.3"
 json-patch = "4.2.0"
 jsonschema = "0.46.5"
+libc = "0.2.186"
 nanoid = "0.5.0"
 percent-encoding = "2.3.2"
 regex = "1.12.3"
@@ -31,6 +32,7 @@ unicode-normalization = "0.1.25"
 url = "2.5.8"
 urlencoding = "2.1.3"
 uuid = { version = "1.23.2", features = ["v7", "v4"] }
+windows-sys = { version = "0.61.2", features = ["Win32_System_Performance"] }
 
 [dev-dependencies]
 rust_decimal_macros = "1.40.0"

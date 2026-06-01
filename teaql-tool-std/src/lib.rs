@@ -5,6 +5,7 @@ pub mod decimal;
 pub mod diff;
 pub mod filter;
 pub mod hash;
+pub mod high_res_timer;
 pub mod i18n;
 pub mod id;
 pub mod json;
