@@ -3,6 +3,7 @@ pub mod color;
 pub mod daterange;
 pub mod decimal;
 pub mod diff;
+pub mod file;
 pub mod filter;
 pub mod hash;
 pub mod high_res_timer;

@@ -104,6 +104,11 @@ impl T {
     }
 
     #[cfg(feature = "std")]
+    pub fn file() -> teaql_tool_std::file::FileTool {
+        teaql_tool_std::file::FileTool
+    }
+
+    #[cfg(feature = "std")]
     pub fn validate() -> teaql_tool_std::validate::ValidateTool {
         teaql_tool_std::validate::ValidateTool::new()
     }
