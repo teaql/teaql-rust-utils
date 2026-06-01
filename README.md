@@ -10,7 +10,7 @@
       │
       │
       │
-    T:: The Unified API Facade
+    T:: The Trusted Tool Facade
 ```
 
 **A unified, stateless, and AI-friendly standard library facade for the TeaQL platform in Rust.**
