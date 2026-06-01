@@ -42,14 +42,8 @@ impl HighResTimer {
 
     #[inline(always)]
     fn get_ticks() -> u64 {
-        #[cfg(windows)]
-        unsafe {
-            let mut v: i64 = 0;
-            QueryPerformanceCounter(&mut v);
-            return v as u64;
-        }
-
-        #[cfg(all(not(windows), any(target_arch = "x86", target_arch = "x86_64")))]
+        // ALWAYS use rdtsc on x86/x86_64 regardless of OS
+        #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
         unsafe {
             _mm_lfence();
             let t = _rdtsc();
@@ -57,6 +51,7 @@ impl HighResTimer {
             return t;
         }
 
+        // ARM64
         #[cfg(target_arch = "aarch64")]
         {
             let val: u64;
@@ -66,6 +61,15 @@ impl HighResTimer {
             return val;
         }
 
+        // Fallback for Windows (non-x86)
+        #[cfg(all(windows, not(any(target_arch = "x86", target_arch = "x86_64", target_arch = "aarch64"))))]
+        unsafe {
+            let mut v: i64 = 0;
+            QueryPerformanceCounter(&mut v);
+            return v as u64;
+        }
+
+        // Fallback for others
         #[cfg(not(any(
             windows,
             target_arch = "x86",
@@ -93,25 +97,71 @@ impl HighResTimer {
 }
 
 fn calibrate_tick_hz() -> u64 {
-    #[cfg(windows)]
-    unsafe {
-        let mut freq: i64 = 0;
-        QueryPerformanceFrequency(&mut freq);
-        return freq as u64;
+    // x86/x86_64 on Windows -> Calibrate rdtsc using QPC
+    #[cfg(all(windows, any(target_arch = "x86", target_arch = "x86_64")))]
+    {
+        return calibrate_tsc_with_qpc();
     }
 
+    // x86/x86_64 on Linux/macOS -> Calibrate rdtsc using CLOCK_MONOTONIC
     #[cfg(all(not(windows), any(target_arch = "x86", target_arch = "x86_64")))]
     {
         return calibrate_tsc_with_monotonic();
     }
 
+    // ARM64 -> Read frequency register
     #[cfg(target_arch = "aarch64")]
     {
         return read_cntfrq_el0();
     }
+
+    // Fallback for Windows (non-x86) -> Return QPC frequency
+    #[cfg(all(windows, not(any(target_arch = "x86", target_arch = "x86_64", target_arch = "aarch64"))))]
+    unsafe {
+        let mut freq: i64 = 0;
+        QueryPerformanceFrequency(&mut freq);
+        return freq as u64;
+    }
     
     #[allow(unreachable_code)]
     2_500_000_000
+}
+
+#[cfg(all(windows, any(target_arch = "x86", target_arch = "x86_64")))]
+fn calibrate_tsc_with_qpc() -> u64 {
+    unsafe {
+        let mut freq: i64 = 0;
+        QueryPerformanceFrequency(&mut freq);
+        let freq = freq as u64;
+
+        let mut start_qpc: i64 = 0;
+        let mut end_qpc: i64 = 0;
+
+        QueryPerformanceCounter(&mut start_qpc);
+        _mm_lfence();
+        let tsc_start = _rdtsc();
+        _mm_lfence();
+
+        // Spin wait ~10ms using QPC
+        let target_qpc = start_qpc + (freq / 100) as i64;
+        loop {
+            QueryPerformanceCounter(&mut end_qpc);
+            if end_qpc >= target_qpc {
+                break;
+            }
+        }
+
+        _mm_lfence();
+        let tsc_end = _rdtsc();
+        _mm_lfence();
+
+        let delta_qpc = (end_qpc - start_qpc) as u128;
+        let delta_tsc = tsc_end - tsc_start;
+        
+        let delta_ns = (delta_qpc * 1_000_000_000u128) / (freq as u128);
+
+        (delta_tsc as u128 * 1_000_000_000u128 / delta_ns) as u64
+    }
 }
 
 #[cfg(all(not(windows), any(target_arch = "x86", target_arch = "x86_64")))]
