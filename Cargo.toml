@@ -4,5 +4,5 @@ members = [
     "teaql-tool-std",
     "teaql-tool-extra",
     "teaql-tool"
-]
+, "teaql-tool-context"]
 resolver = "2"

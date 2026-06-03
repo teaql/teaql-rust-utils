@@ -1,6 +1,7 @@
 use nanoid::nanoid;
 use ulid::Ulid;
 use uuid::Uuid;
+use teaql_tool_core::MustComment;
 
 pub struct IdTool;
 
@@ -9,24 +10,24 @@ impl IdTool {
         Self
     }
 
-    pub fn uuid(&self) -> String {
-        Uuid::new_v4().to_string()
+    pub fn uuid(&self) -> MustComment<String> {
+        MustComment::new(Uuid::new_v4().to_string())
     }
 
-    pub fn uuid_v7(&self) -> String {
-        Uuid::now_v7().to_string()
+    pub fn uuid_v7(&self) -> MustComment<String> {
+        MustComment::new(Uuid::now_v7().to_string())
     }
 
-    pub fn ulid(&self) -> String {
-        Ulid::new().to_string()
+    pub fn ulid(&self) -> MustComment<String> {
+        MustComment::new(Ulid::new().to_string())
     }
 
-    pub fn nanoid(&self) -> String {
-        nanoid!()
+    pub fn nanoid(&self) -> MustComment<String> {
+        MustComment::new(nanoid!())
     }
 
-    pub fn with_prefix(&self, prefix: &str) -> String {
-        format!("{}_{}", prefix, self.nanoid())
+    pub fn with_prefix(&self, prefix: &str) -> MustComment<String> {
+        MustComment::new(format!("{}_{}", prefix, self.nanoid().comment("internal extraction")))
     }
 }
 
