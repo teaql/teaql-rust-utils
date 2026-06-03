@@ -1,0 +1,12 @@
+[package]
+name = "teaql-tool-context"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+http = ["dep:reqwest"]
+
+[dependencies]
+teaql-runtime = { path = "../../teaql-rs/teaql-runtime" }
+reqwest = { version = "0.12", optional = true }
