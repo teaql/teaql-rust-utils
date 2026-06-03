@@ -150,6 +150,67 @@ fn main() {
 }
 ```
 
+## 🛡️ Application Layer Usage (Context & Auditing)
+
+While the `T::` facade is fantastic for standalone scripts or internal framework logic, **business applications have strict requirements for context-awareness (Timezones, Locales) and auditability.**
+
+For application layer code, `teaql-tool` provides `teaql-tool-context`. This completely shadows the raw `T::` facade and binds all tools to the `UserContext` (`ctx`). 
+
+### The `MustComment` Constraint
+To prevent "naked" logic and enforce self-documenting code, every pure calculation or IO operation at the application layer is wrapped in a `MustComment<T>` or `PendingAction`. You cannot extract the result or execute the IO without explicitly chaining `.comment("intent")`.
+
+```rust
+use teaql_tool_context::prelude::*;
+
+// 1. Context-Aware Pure Math (Timezone injected automatically)
+let deadline = ctx.time().today().add_days(7).comment("Calculate grace period deadline");
+
+// 2. Context-Aware IO (Automatically logs Trace ID and intent)
+let data = ctx.http().get("https://api.github.com/tasks")
+    .comment("Sync latest tasks from external provider")
+    .await?;
+```
+
+---
+
+## 🤖 AI & Developer Guardrails (Enforcing Context)
+
+If you are using AI agents (like Cursor) or building a large team, you must prevent developers and AI from bypassing the `ctx` layer. We provide physical and prompt-based guardrails to ensure 100% compliance.
+
+### 1. The Compiler Block (`clippy.toml`)
+Place this in your application root to physically prevent compilation if raw tools or `std::fs` are used:
+
+```toml
+disallowed-types = [
+    "teaql_tool::T",
+    "chrono::Utc",
+    "chrono::Local",
+    "std::fs::File",
+]
+
+disallowed-methods = [
+    "teaql_tool::T::*",
+    "std::fs::read",
+    "std::fs::read_to_string",
+    "std::fs::write",
+    "std::process::Command::new",
+    "reqwest::get"
+]
+```
+
+### 2. The AI Sandbox (`.cursorrules`)
+Place this prompt directive in your project root to align the AI before it even writes code:
+
+```markdown
+# Business Logic Coding Rules (CRITICAL)
+
+1. **ABSOLUTE BAN ON `T::` TOOLS**: Inside the application layer, you are strictly forbidden from calling any stateless utility from the `teaql_tool::T` facade directly. 
+2. **MANDATORY CONTEXT USAGE**: All side effects (network, file) and all stateful computations (time, formatting, ID generation) MUST go through the user context (`ctx`).
+3. **MANDATORY BUSINESS INTENT**: Every single tool call must be appended with `.comment("English intent description")`. Without this, the compiler will reject the `MustComment<T>` wrapper.
+```
+
+---
+
 ## 📜 License
 
 This project is licensed under the Apache License, Version 2.0.
