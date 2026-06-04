@@ -1,3 +1,7 @@
+pub mod audit;
+
+pub use audit::{AuditConfig, AuditLevel, Module};
+
 use thiserror::Error;
 
 /// A unified error type for all TeaQL Tool operations.
