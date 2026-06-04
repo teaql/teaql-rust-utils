@@ -1,6 +1,8 @@
 pub mod audit;
+pub mod formatter;
 
 pub use audit::{AuditConfig, AuditLevel, Module};
+pub use formatter::{AuditFormatter, AuditDetail};
 
 use thiserror::Error;
 
