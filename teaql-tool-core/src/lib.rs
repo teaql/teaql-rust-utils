@@ -31,11 +31,11 @@ pub type Result<T> = std::result::Result<T, TeaQLToolError>;
 /// Without calling `.comment()`, the internal value cannot be extracted or used.
 /// This prevents un-annotated logic in the application layer.
 #[repr(transparent)]
-pub struct MustComment<T> {
+pub struct MustPurpose<T> {
     value: T,
 }
 
-impl<T> MustComment<T> {
+impl<T> MustPurpose<T> {
     /// Internal constructor, used by the framework to wrap returned values.
     #[inline(always)]
     pub fn new(value: T) -> Self {
@@ -45,7 +45,7 @@ impl<T> MustComment<T> {
     /// The ONLY way to extract the value. Enforces providing a business intent string.
     /// In release builds, this is completely optimized away (Zero-Cost).
     #[inline(always)]
-    pub fn comment(self, _desc: impl Into<String>) -> T {
+    pub fn purpose(self, _desc: impl Into<String>) -> T {
         self.value
     }
 }
