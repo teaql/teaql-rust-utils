@@ -13,6 +13,7 @@ const ALLOWED_ENV_VARS: &[&str] = &[
     "TEAQL_TOOL",
     "TEAQL_TOOL_FOCUS",
     "TEAQL_SINK",
+    "TEAQL_SCHEMA",
 ];
 
 /// Allowed values for level-type env vars. Prefixed with underscore
@@ -21,6 +22,9 @@ const ALLOWED_LEVELS: &[&str] = &["_silent", "_summary", "_full"];
 
 /// Allowed values for TEAQL_SINK.
 const ALLOWED_SINKS: &[&str] = &["_stdout", "_file", "_both"];
+
+/// Allowed values for TEAQL_SCHEMA.
+const ALLOWED_SCHEMA_MODES: &[&str] = &["_verify", "_dryrun", "_execute"];
 
 /// All valid module names for TEAQL_TOOL_FOCUS.
 const ALLOWED_MODULES: &[(&str, Module)] = &[
@@ -69,6 +73,30 @@ impl Default for AuditSink {
     }
 }
 
+/// Controls schema migration behavior at startup. Controlled by TEAQL_SCHEMA.
+/// Default is `Verify` — the safest option for production.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SchemaMode {
+    /// Check that the database schema matches the model.
+    /// If there is any mismatch, print the details and exit immediately.
+    /// This is the DEFAULT — no env var needed for the safest behavior.
+    Verify,
+
+    /// Print the SQL statements that would be executed to bring the
+    /// schema in sync, but do NOT execute them. For DBA review.
+    DryRun,
+
+    /// Actually execute schema changes (CREATE TABLE, ALTER TABLE ADD COLUMN,
+    /// CREATE INDEX, seed data). Use in development and CI only.
+    Execute,
+}
+
+impl Default for SchemaMode {
+    fn default() -> Self {
+        SchemaMode::Verify
+    }
+}
+
 // ─── Env config result ────────────────────────────────────────
 
 /// The fully resolved configuration parsed from environment variables.
@@ -85,6 +113,8 @@ pub struct EnvAuditConfig {
     pub sql_tables: Option<HashSet<String>>,
     /// Output sink (from TEAQL_SINK).
     pub sink: AuditSink,
+    /// Schema migration mode (from TEAQL_SCHEMA). Default: Verify.
+    pub schema_mode: SchemaMode,
 }
 
 impl EnvAuditConfig {
@@ -133,6 +163,24 @@ fn parse_sink(value: &str) -> AuditSink {
                  Application refused to start.\n",
                 other,
                 ALLOWED_SINKS.join(", "),
+            );
+            std::process::exit(1);
+        }
+    }
+}
+
+fn parse_schema_mode(value: &str) -> SchemaMode {
+    match value {
+        "_verify" => SchemaMode::Verify,
+        "_dryrun" => SchemaMode::DryRun,
+        "_execute" => SchemaMode::Execute,
+        other => {
+            eprintln!(
+                "\nFATAL: Invalid value \"{}\" for environment variable \"TEAQL_SCHEMA\"\n\
+                 Allowed values: {}\n\n\
+                 Application refused to start.\n",
+                other,
+                ALLOWED_SCHEMA_MODES.join(", "),
             );
             std::process::exit(1);
         }
@@ -293,6 +341,10 @@ pub fn audit_config_from_env(known_tables: &[&str]) -> EnvAuditConfig {
         .map(|v| parse_sink(&v))
         .unwrap_or(AuditSink::Both);
 
+    let schema_mode = std::env::var("TEAQL_SCHEMA")
+        .map(|v| parse_schema_mode(&v))
+        .unwrap_or(SchemaMode::Verify);
+
     // Step 3: Build the AuditConfig
     let config = match &tool_focus {
         Some(focused) => {
@@ -315,6 +367,7 @@ pub fn audit_config_from_env(known_tables: &[&str]) -> EnvAuditConfig {
         sql_level,
         sql_tables,
         sink,
+        schema_mode,
     }
 }
 
@@ -344,6 +397,14 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_schema_mode() {
+        assert_eq!(parse_schema_mode("_verify"), SchemaMode::Verify);
+        assert_eq!(parse_schema_mode("_dryrun"), SchemaMode::DryRun);
+        assert_eq!(parse_schema_mode("_execute"), SchemaMode::Execute);
+        assert_eq!(SchemaMode::default(), SchemaMode::Verify);
+    }
+
+    #[test]
     fn test_parse_module_list() {
         let modules = parse_module_list("http,money,crypto");
         assert_eq!(modules.len(), 3);
@@ -368,6 +429,7 @@ mod tests {
             sql_level: AuditLevel::Full,
             sql_tables: Some(["task".to_string()].into_iter().collect()),
             sink: AuditSink::Both,
+            schema_mode: SchemaMode::Verify,
         };
         assert!(cfg.sql_active_for("task"));
         assert!(!cfg.sql_active_for("task_status"));
@@ -379,6 +441,7 @@ mod tests {
             sql_level: AuditLevel::Full,
             sql_tables: None,
             sink: AuditSink::Both,
+            schema_mode: SchemaMode::Verify,
         };
         assert!(cfg_all.sql_active_for("task"));
         assert!(cfg_all.sql_active_for("anything"));
@@ -390,6 +453,7 @@ mod tests {
             sql_level: AuditLevel::Silent,
             sql_tables: None,
             sink: AuditSink::Both,
+            schema_mode: SchemaMode::Verify,
         };
         assert!(!cfg_silent.sql_active_for("task"));
     }

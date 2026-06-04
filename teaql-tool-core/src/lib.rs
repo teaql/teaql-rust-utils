@@ -3,7 +3,7 @@ pub mod env_config;
 pub mod formatter;
 
 pub use audit::{AuditConfig, AuditLevel, Module};
-pub use env_config::{audit_config_from_env, AuditSink, EnvAuditConfig};
+pub use env_config::{audit_config_from_env, AuditSink, EnvAuditConfig, SchemaMode};
 pub use formatter::{AuditFormatter, AuditDetail};
 
 use thiserror::Error;
