@@ -74,6 +74,15 @@ pub struct AuditConfig {
 }
 
 impl AuditConfig {
+    /// Create a new AuditConfig with explicit default levels.
+    pub fn new(io_level: AuditLevel, compute_level: AuditLevel) -> Self {
+        Self {
+            levels: HashMap::new(),
+            default_io_level: io_level,
+            default_compute_level: compute_level,
+        }
+    }
+
     // ─── Presets ───────────────────────────────────────────────
 
     /// Everything silent. Use in CI/test environments or when
