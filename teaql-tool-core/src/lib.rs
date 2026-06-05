@@ -49,3 +49,9 @@ impl<T> MustPurpose<T> {
         self.value
     }
 }
+
+impl<T: std::fmt::Debug> std::fmt::Debug for MustPurpose<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Debug::fmt(&self.value, f)
+    }
+}
