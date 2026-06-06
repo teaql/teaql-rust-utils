@@ -1,15 +1,15 @@
 [package]
 name = "teaql-tool"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "The ultimate utility toolkit for TeaQL, inspired by Java Hutool."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/teaql/teaql-rust-utils"
 
 [dependencies]
-teaql-tool-core = { version = "0.1.1", path = "../teaql-tool-core" }
-teaql-tool-std = { version = "0.1.1", path = "../teaql-tool-std", optional = true }
-teaql-tool-extra = { version = "0.1.1", path = "../teaql-tool-extra", optional = true }
+teaql-tool-core = { version = "0.1.2", path = "../teaql-tool-core" }
+teaql-tool-std = { version = "0.1.2", path = "../teaql-tool-std", optional = true }
+teaql-tool-extra = { version = "0.1.2", path = "../teaql-tool-extra", optional = true }
 
 [features]
 default = ["minimal"]
@@ -20,4 +20,8 @@ minimal = [
 
 std = ["dep:teaql-tool-std"]
 extra = ["dep:teaql-tool-extra"]
+
+[[example]]
+name = "scripting"
+required-features = ["extra"]
 

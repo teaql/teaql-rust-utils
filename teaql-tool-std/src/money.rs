@@ -2,7 +2,7 @@ use iso_currency::Currency;
 use rust_decimal::Decimal;
 use rust_decimal::RoundingStrategy;
 use std::str::FromStr;
-use teaql_tool_core::{MustComment, Result, TeaQLToolError};
+use teaql_tool_core::{MustPurpose, Result, TeaQLToolError};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Money {
@@ -17,25 +17,25 @@ impl MoneyTool {
         Self
     }
 
-    pub fn of(&self, amount_str: &str, currency_code: &str) -> Result<MustComment<Money>> {
+    pub fn of(&self, amount_str: &str, currency_code: &str) -> Result<MustPurpose<Money>> {
         let amount =
             Decimal::from_str(amount_str).map_err(|e| TeaQLToolError::ParseError(e.to_string()))?;
         let currency = Currency::from_code(currency_code).ok_or_else(|| {
             TeaQLToolError::InvalidArgument(format!("Invalid currency code: {}", currency_code))
         })?;
-        Ok(MustComment::new(Money { amount, currency }))
+        Ok(MustPurpose::new(Money { amount, currency }))
     }
 
-    pub fn zero(&self, currency_code: &str) -> Result<MustComment<Money>> {
+    pub fn zero(&self, currency_code: &str) -> Result<MustPurpose<Money>> {
         self.of("0", currency_code)
     }
 
-    pub fn same_currency(&self, a: &Money, b: &Money) -> MustComment<bool> {
-        MustComment::new(a.currency == b.currency)
+    pub fn same_currency(&self, a: &Money, b: &Money) -> MustPurpose<bool> {
+        MustPurpose::new(a.currency == b.currency)
     }
 
     fn check_currency(&self, a: &Money, b: &Money) -> Result<()> {
-        if !self.same_currency(a, b).comment("internal check") {
+        if !self.same_currency(a, b).purpose("internal check") {
             Err(TeaQLToolError::InvalidArgument(
                 "Currency mismatch".to_string(),
             ))
@@ -44,45 +44,45 @@ impl MoneyTool {
         }
     }
 
-    pub fn add(&self, a: &Money, b: &Money) -> Result<MustComment<Money>> {
+    pub fn add(&self, a: &Money, b: &Money) -> Result<MustPurpose<Money>> {
         self.check_currency(a, b)?;
-        Ok(MustComment::new(Money {
+        Ok(MustPurpose::new(Money {
             amount: a.amount + b.amount,
             currency: a.currency.clone(),
         }))
     }
 
-    pub fn sub(&self, a: &Money, b: &Money) -> Result<MustComment<Money>> {
+    pub fn sub(&self, a: &Money, b: &Money) -> Result<MustPurpose<Money>> {
         self.check_currency(a, b)?;
-        Ok(MustComment::new(Money {
+        Ok(MustPurpose::new(Money {
             amount: a.amount - b.amount,
             currency: a.currency.clone(),
         }))
     }
 
-    pub fn mul(&self, a: &Money, multiplier: Decimal) -> Result<MustComment<Money>> {
-        Ok(MustComment::new(Money {
+    pub fn mul(&self, a: &Money, multiplier: Decimal) -> Result<MustPurpose<Money>> {
+        Ok(MustPurpose::new(Money {
             amount: a.amount * multiplier,
             currency: a.currency.clone(),
         }))
     }
 
-    pub fn div(&self, a: &Money, divisor: Decimal) -> Result<MustComment<Money>> {
+    pub fn div(&self, a: &Money, divisor: Decimal) -> Result<MustPurpose<Money>> {
         if divisor.is_zero() {
             Err(TeaQLToolError::InvalidArgument(
                 "Division by zero".to_string(),
             ))
         } else {
-            Ok(MustComment::new(Money {
+            Ok(MustPurpose::new(Money {
                 amount: a.amount / divisor,
                 currency: a.currency.clone(),
             }))
         }
     }
 
-    pub fn round(&self, a: &Money) -> Result<MustComment<Money>> {
+    pub fn round(&self, a: &Money) -> Result<MustPurpose<Money>> {
         let exp = a.currency.exponent().unwrap_or(2) as u32;
-        Ok(MustComment::new(Money {
+        Ok(MustPurpose::new(Money {
             amount: a
                 .amount
                 .round_dp_with_strategy(exp, RoundingStrategy::MidpointNearestEven),
@@ -90,7 +90,7 @@ impl MoneyTool {
         }))
     }
 
-    pub fn allocate(&self, a: &Money, ratios: Vec<u32>) -> Result<MustComment<Vec<Money>>> {
+    pub fn allocate(&self, a: &Money, ratios: Vec<u32>) -> Result<MustPurpose<Vec<Money>>> {
         if ratios.is_empty() {
             return Err(TeaQLToolError::InvalidArgument(
                 "Ratios cannot be empty".to_string(),
@@ -126,11 +126,11 @@ impl MoneyTool {
                 remainder -= rounded;
             }
         }
-        Ok(MustComment::new(results))
+        Ok(MustPurpose::new(results))
     }
 
-    pub fn format(&self, a: &Money) -> MustComment<String> {
-        MustComment::new(format!("{} {}", a.amount, a.currency.code()))
+    pub fn format(&self, a: &Money) -> MustPurpose<String> {
+        MustPurpose::new(format!("{} {}", a.amount, a.currency.code()))
     }
 }
 

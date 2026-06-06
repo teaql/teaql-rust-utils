@@ -1,3 +1,11 @@
+pub mod audit;
+pub mod env_config;
+pub mod formatter;
+
+pub use audit::{AuditConfig, AuditLevel, Module};
+pub use env_config::{audit_config_from_env, AuditSink, EnvAuditConfig, SchemaMode};
+pub use formatter::{AuditFormatter, AuditDetail};
+
 use thiserror::Error;
 
 /// A unified error type for all TeaQL Tool operations.
@@ -23,11 +31,11 @@ pub type Result<T> = std::result::Result<T, TeaQLToolError>;
 /// Without calling `.comment()`, the internal value cannot be extracted or used.
 /// This prevents un-annotated logic in the application layer.
 #[repr(transparent)]
-pub struct MustComment<T> {
+pub struct MustPurpose<T> {
     value: T,
 }
 
-impl<T> MustComment<T> {
+impl<T> MustPurpose<T> {
     /// Internal constructor, used by the framework to wrap returned values.
     #[inline(always)]
     pub fn new(value: T) -> Self {
@@ -37,7 +45,13 @@ impl<T> MustComment<T> {
     /// The ONLY way to extract the value. Enforces providing a business intent string.
     /// In release builds, this is completely optimized away (Zero-Cost).
     #[inline(always)]
-    pub fn comment(self, _desc: impl Into<String>) -> T {
+    pub fn purpose(self, _desc: impl Into<String>) -> T {
         self.value
+    }
+}
+
+impl<T: std::fmt::Debug> std::fmt::Debug for MustPurpose<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Debug::fmt(&self.value, f)
     }
 }
