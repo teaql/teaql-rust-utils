@@ -186,6 +186,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-trait"
+version = "0.1.89"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9035ad2d096bed7955a320ee7e2230574d28fd3c3a0f186cbea1ff3c7eed5dbb"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
 name = "atoi_simd"
 version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4773,7 +4784,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-core"
-version = "3.0.0"
+version = "3.1.0"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -4783,15 +4794,16 @@ dependencies = [
 
 [[package]]
 name = "teaql-data-service"
-version = "3.0.0"
+version = "3.1.0"
 dependencies = [
  "teaql-core",
 ]
 
 [[package]]
 name = "teaql-runtime"
-version = "3.0.0"
+version = "3.1.0"
 dependencies = [
+ "async-trait",
  "chrono",
  "rust_decimal",
  "serde_json",
@@ -4802,7 +4814,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-sql"
-version = "3.0.0"
+version = "3.1.0"
 dependencies = [
  "teaql-core",
  "teaql-data-service",
@@ -4810,7 +4822,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool"
-version = "0.1.2"
+version = "1.0.0"
 dependencies = [
  "teaql-tool-core",
  "teaql-tool-extra",
@@ -4819,7 +4831,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-context"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "reqwest 0.12.28",
  "teaql-runtime",
@@ -4827,14 +4839,14 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-core"
-version = "0.1.2"
+version = "1.0.0"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "teaql-tool-extra"
-version = "0.1.2"
+version = "1.0.0"
 dependencies = [
  "aes-gcm",
  "arboard",
@@ -4873,7 +4885,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-std"
-version = "0.1.2"
+version = "1.0.0"
 dependencies = [
  "aho-corasick",
  "base64",

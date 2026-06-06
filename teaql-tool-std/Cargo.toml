@@ -1,6 +1,6 @@
 [package]
 name = "teaql-tool-std"
-version = "0.1.2"
+version = "1.0.0"
 edition = "2024"
 description = "Zero-dependency standard utilities for the TeaQL Tool ecosystem."
 license = "MIT OR Apache-2.0"
@@ -29,7 +29,7 @@ rust_decimal = "1.42.0"
 serde_json = "1.0.150"
 sha2 = "0.11.0"
 similar = "3.1.1"
-teaql-tool-core = { version = "0.1.2", path = "../teaql-tool-core" }
+teaql-tool-core = { version = "1.0.0", path = "../teaql-tool-core" }
 ulid = "1.2.1"
 unicode-normalization = "0.1.25"
 url = "2.5.8"
