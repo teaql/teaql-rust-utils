@@ -1,6 +1,6 @@
 [package]
 name = "teaql-tool-context"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
 description = "Context and runtime integration for the TeaQL Tool ecosystem."
 license = "MIT OR Apache-2.0"
@@ -9,7 +9,49 @@ repository = "https://github.com/teaql/teaql-rust-utils"
 [features]
 default = []
 http = ["dep:reqwest"]
+std = [
+    "dep:teaql-tool-std",
+    "dep:teaql-tool-core",
+    "dep:chrono",
+    "dep:chrono-tz",
+    "dep:rust_decimal",
+    "dep:serde_json",
+    "dep:json-patch",
+    "dep:aho-corasick",
+    "dep:url",
+]
+extra = [
+    "dep:teaql-tool-extra",
+    "dep:teaql-tool-core",
+    "dep:serde_json",
+    "dep:serde",
+    "dep:chrono",
+    "dep:sled",
+    "dep:phonenumber",
+]
+all = ["http", "std", "extra"]
 
 [dependencies]
-teaql-runtime = { version = "3.1.0", path = "../../teaql-rs/teaql-runtime" }
+teaql-runtime = { version = "4.0.5", path = "../../teaql-rs/teaql-runtime" }
+
+# Existing
 reqwest = { version = "0.12", optional = true }
+
+# Tool crates
+teaql-tool-core = { version = "2.0.0", path = "../teaql-tool-core", optional = true }
+teaql-tool-std = { version = "2.0.0", path = "../teaql-tool-std", optional = true }
+teaql-tool-extra = { version = "2.0.0", path = "../teaql-tool-extra", optional = true }
+
+# Type dependencies for std tool facades
+chrono = { version = "0.4.44", optional = true }
+chrono-tz = { version = "0.10.4", optional = true }
+rust_decimal = { version = "1.42.0", optional = true }
+serde_json = { version = "1.0.150", optional = true }
+json-patch = { version = "4.2.0", optional = true }
+aho-corasick = { version = "1.1.4", optional = true }
+url = { version = "2.5.8", optional = true }
+
+# Type dependencies for extra tool facades
+serde = { version = "1.0.228", features = ["derive"], optional = true }
+sled = { version = "0.34.7", optional = true }
+phonenumber = { version = "0.3.9", optional = true }

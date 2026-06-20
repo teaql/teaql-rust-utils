@@ -4784,7 +4784,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-core"
-version = "3.1.0"
+version = "4.0.5"
 dependencies = [
  "chrono",
  "rust_decimal",
@@ -4794,14 +4794,14 @@ dependencies = [
 
 [[package]]
 name = "teaql-data-service"
-version = "3.1.0"
+version = "4.0.5"
 dependencies = [
  "teaql-core",
 ]
 
 [[package]]
 name = "teaql-runtime"
-version = "3.1.0"
+version = "4.0.5"
 dependencies = [
  "async-trait",
  "chrono",
@@ -4814,7 +4814,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-sql"
-version = "3.1.0"
+version = "4.0.5"
 dependencies = [
  "teaql-core",
  "teaql-data-service",
@@ -4822,7 +4822,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
  "teaql-tool-core",
  "teaql-tool-extra",
@@ -4831,22 +4831,35 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-context"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
+ "aho-corasick",
+ "chrono",
+ "chrono-tz 0.10.4",
+ "json-patch",
+ "phonenumber",
  "reqwest 0.12.28",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "sled",
  "teaql-runtime",
+ "teaql-tool-core",
+ "teaql-tool-extra",
+ "teaql-tool-std",
+ "url",
 ]
 
 [[package]]
 name = "teaql-tool-core"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "teaql-tool-extra"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
  "aes-gcm",
  "arboard",
@@ -4885,7 +4898,7 @@ dependencies = [
 
 [[package]]
 name = "teaql-tool-std"
-version = "1.0.0"
+version = "2.0.0"
 dependencies = [
  "aho-corasick",
  "base64",

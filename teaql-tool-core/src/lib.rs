@@ -55,3 +55,51 @@ impl<T: std::fmt::Debug> std::fmt::Debug for MustPurpose<T> {
         std::fmt::Debug::fmt(&self.value, f)
     }
 }
+
+/// A zero-cost wrapper that forces the developer to provide a comment for general operations.
+#[repr(transparent)]
+pub struct MustComment<T> {
+    value: T,
+}
+
+impl<T> MustComment<T> {
+    #[inline(always)]
+    pub fn new(value: T) -> Self {
+        Self { value }
+    }
+
+    #[inline(always)]
+    pub fn comment(self, _desc: impl Into<String>) -> T {
+        self.value
+    }
+}
+
+impl<T: std::fmt::Debug> std::fmt::Debug for MustComment<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Debug::fmt(&self.value, f)
+    }
+}
+
+/// A zero-cost wrapper that forces the developer to provide an audit description for operations with side effects.
+#[repr(transparent)]
+pub struct MustAuditAs<T> {
+    value: T,
+}
+
+impl<T> MustAuditAs<T> {
+    #[inline(always)]
+    pub fn new(value: T) -> Self {
+        Self { value }
+    }
+
+    #[inline(always)]
+    pub fn audit_as(self, _desc: impl Into<String>) -> T {
+        self.value
+    }
+}
+
+impl<T: std::fmt::Debug> std::fmt::Debug for MustAuditAs<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Debug::fmt(&self.value, f)
+    }
+}
