@@ -7,7 +7,7 @@ Use `ctx.list()` to perform common collection and slice operations such as chunk
 To use the list utilities, you must add `teaql-tool` to your project with the `std` feature enabled.
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## List Operations

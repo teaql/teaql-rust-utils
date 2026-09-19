@@ -7,13 +7,13 @@ Use `ctx.daterange()` to easily calculate common date and time ranges for querie
 To use the date range utilities, you must add `teaql-tool` to your project with the `std` feature enabled. Run the following command in your terminal:
 
 ```bash
-cargo add teaql-tool --features std
+cargo add teaql-tool-context --features std
 ```
 
 Or manually add it to your `Cargo.toml`:
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## Basic Usage

@@ -6,7 +6,7 @@ The ultimate utility toolkit for Rust, heavily inspired by Java's Hutool. Design
 
 `teaql-tool` is a **Facade** crate. All utilities are accessed cleanly through the central `T::` namespace, significantly lowering the cognitive load for developers and AI code generators.
 
-- **`teaql-tool-std`**: Zero-dependency standard utilities (String manipulation, File I/O, Data privacy masking, Tree building, Math, Time).
+- **`teaql-tool-std`**: Lightweight standard utilities (String manipulation, File I/O, Data privacy masking, Tree building, Math, Time).
 - **`teaql-tool-extra`**: Heavy-dependency extensions (HTTP client, ZIP archive, Static Server, File watcher, JWT, Excel/CSV).
 
 ## Usage
@@ -16,10 +16,10 @@ Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
 # By default, only the lightweight "std" utilities are included.
-teaql-tool = "0.1"
+teaql-tool = "2.0.0"
 
 # To enable networking, web servers, and heavy IO features:
-teaql-tool = { version = "0.1", features = ["std", "extra"] }
+teaql-tool = { version = "2.0.0", features = ["std", "extra"] }
 ```
 
 In your Rust code, simply use the `T` facade:

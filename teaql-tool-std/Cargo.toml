@@ -2,7 +2,7 @@
 name = "teaql-tool-std"
 version = "2.0.0"
 edition = "2024"
-description = "Zero-dependency standard utilities for the TeaQL Tool ecosystem."
+description = "Lightweight standard utilities for the TeaQL Tool ecosystem."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/teaql/teaql-rust-utils"
 

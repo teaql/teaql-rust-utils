@@ -38,89 +38,97 @@ Add `teaql-tool` to your `Cargo.toml`. You can selectively opt into features dep
 ```toml
 [dependencies]
 # For the standard lightweight utilities
-teaql-tool = { version = "0.1", features = ["std"] }
+teaql-tool = { version = "2.0.0", features = ["std"] }
 
 # For everything (including network, crypto, images, web scraping, and watchers)
-teaql-tool = { version = "0.1", features = ["std", "extra"] }
+teaql-tool = { version = "2.0.0", features = ["std", "extra"] }
 ```
 
 ---
 
-## 🛠️ Module Overview & Examples
+## 🛠️ Feature Inventory
 
-The facade exposes a static struct `T`, which you can use to immediately access any module. Simply `use teaql_tool::T;`.
+The workspace contains **52 unique tools** exposed through the `T::xxx()` facade: **26 standard tools** and **26 optional extension tools**. Facade and context crates reuse these implementations and are therefore not counted again.
 
-### 🧰 Core Data & Logic (`teaql-tool-std`)
+### Package Overview
 
-- **`T::id()`**: Instantly generate `uuid()`, `ulid()`, or `nanoid()`.
-- **`T::time()`**: Ergonomic timezone-aware math and formatting powered by `chrono`.
-  ```rust
-  let tomorrow = T::time().add_days(&T::time().now(), 1);
-  ```
-- **`T::money()`**: Exact monetary division and math without floating-point errors.
-- **`T::decimal()`**: Arbitrary precision math.
-- **`T::codec()`**: Base64, Hex, URL-encoding in one line.
-  ```rust
-  let encoded = T::codec().base64_encode(b"Hello");
-  ```
-- **`T::text()`**: Case conversions (snake, camel, kebab), truncations, and padding.
-- **`T::json()`**: Parse to/from JSON, apply JSON Patches, and query via JSON Pointers.
-- **`T::regex()`**: Extract patterns or validate regex without manual compilation.
-- **`T::list()` / `T::map()`**: Quick iterators, grouping, sorting, and map inversions.
-- **`T::diff()`**: Compare text strings to get unified diffs.
-- **`T::unit()`**: Convert bytes (KB/MB) and durations.
-- **`T::color()`**: Convert RGB, HEX, and HSL.
+| Package | Role | Contents |
+| --- | --- | --- |
+| `teaql-tool-core` | Shared foundation | No `T::` tools. Provides `Result`, `TeaQLToolError`, `MustPurpose`, `MustComment`, `MustAuditAs`, and audit configuration/formatting types. |
+| `teaql-tool-std` | Standard tool implementation | 26 lightweight, general-purpose tools. |
+| `teaql-tool-extra` | Optional extension package | 26 heavier tools for IO, protocols, automation, and integrations. |
+| `teaql-tool` | Public facade | Exposes all 52 tools through `T::xxx()`; `std` enables 26 and `extra` enables another 26. The default `minimal` feature enables `std`. |
+| `teaql-tool-context` | Application-layer adapters | Adds `UserContext` access and intent wrappers. It currently adapts all 26 standard tools, 21 extension tools, and a separate async `ctx.http()` adapter. It does not add new tool implementations. |
 
-### 🚀 Automation & Scripts (`teaql-tool-extra`)
+### Standard Package (`teaql-tool-std`, 26 tools)
 
-The `extra` feature pulls in heavier dependencies designed to give your scripts superpowers.
+| Tool | Main capabilities |
+| --- | --- |
+| `T::codec()` | Base64, hex, URL, and HTML encoding/decoding |
+| `T::color()` | Named CSS colors |
+| `T::daterange()` | Day/hour ranges and offsets |
+| `T::decimal()` | Exact decimal arithmetic, rounding, ratios, and percentages |
+| `T::desensitize()` | Mask IDs, phone numbers, names, SSNs, cards, email, and passwords |
+| `T::diff()` | Text diff generation |
+| `T::emoji()` | Detect, remove, and replace emoji |
+| `T::file()` | Read, write, inspect, copy, rename, list, and delete files/directories |
+| `T::filter()` | Build sensitive-word tries, detect matches, and replace matches |
+| `T::hash()` | SHA-256, SHA-512, BLAKE3, and CRC32 |
+| `T::high_res_timer()` | Nanosecond, microsecond, and millisecond timing |
+| `T::i18n()` | Locale dictionaries, JSON loading, lookup, and interpolation |
+| `T::id()` | UUID, UUID v7, ULID, NanoID, and prefixed IDs |
+| `T::json()` | Parse, serialize, query, merge, diff, and patch JSON |
+| `T::list()` | Chunk, deduplicate, intersect, union, and subtract lists |
+| `T::map()` | Merge and invert maps |
+| `T::money()` | Currency-safe arithmetic, allocation, rounding, and formatting |
+| `T::net()` | Local IPv4 lookup, port checks, and private-IP detection |
+| `T::regex()` | Match, find, replace, split, escape, and validate regexes |
+| `T::system()` | Environment, OS, architecture, and current-directory information |
+| `T::text()` | Trimming, casing, case conversion, and whitespace normalization |
+| `T::time()` | Current time/date, parsing, date math, boundaries, and timezones |
+| `T::tree()` | Convert flat records into nested trees |
+| `T::unit()` | Byte-size and Celsius/Fahrenheit conversions |
+| `T::url()` | URL parsing and percent encoding/decoding |
+| `T::validate()` | Email, URL, and string-length validation |
 
-- **`T::cmd()`**: Execute shell commands easily with built-in timeouts.
-  ```rust
-  let (stdout, stderr, code) = T::cmd().run_with_timeout("ls -al", 5).unwrap();
-  ```
-- **`T::server()`**: Start a static file HTTP server in one line (blocking).
-  ```rust
-  T::server().serve_dir("./public", 8080).unwrap();
-  ```
-- **`T::proxy()`**: Start a transparent reverse proxy.
-  ```rust
-  T::proxy().start(8081, "http://127.0.0.1:3000").unwrap();
-  ```
-- **`T::watcher()`**: Monitor filesystem changes recursively.
-  ```rust
-  T::watcher().watch("./src", |changed_path| println!("Changed: {}", changed_path)).unwrap();
-  ```
-- **`T::archive()`**: One-line Zip creation and extraction.
-  ```rust
-  T::archive().zip_dir("./src", "backup.zip").unwrap();
-  ```
-- **`T::html()`**: Scrape web content using CSS selectors.
-  ```rust
-  let links = T::html().select_attr(html_str, "a.active", "href").unwrap();
-  ```
-- **`T::cron()`**: Run background scheduling with cron expressions.
-  ```rust
-  T::cron().schedule("0 * * * * *", || println!("Ran every minute!")).unwrap();
-  ```
-- **`T::kv()`**: Open an embedded, pure-Rust key-value database (`sled`).
-  ```rust
-  let db = T::kv().open("./local.db").unwrap();
-  db.insert("key", "value").unwrap();
-  ```
-- **`T::clipboard()`**: Read and write cross-platform clipboard content.
-- **`T::pinyin()`**: Convert Chinese characters to Pinyin effortlessly.
+### Extension Package (`teaql-tool-extra`, 26 tools)
 
-### 🌍 Business & Integration (`teaql-tool-extra`)
+Enable these heavier dependencies with the `extra` feature.
 
-- **`T::http()`**: Fire off GET/POST requests without setting up async clients manually.
-- **`T::crypto()`**: Symmetrical (`aes-gcm`), asymmetrical (`rsa`), and HMAC signatures.
-- **`T::jwt()`**: Sign and verify JSON Web Tokens.
-- **`T::email()`**: Construct and send emails over SMTP.
-- **`T::excel()` / `T::csv()`**: Parse spreadsheets directly into lists of structures.
-- **`T::image()`**: Resize, crop, and convert image formats.
-- **`T::barcode()` / `T::qrcode()`**: Generate barcodes and QRCodes as PNG or SVG.
-- **`T::template()`**: Render Tera templates with JSON data.
+| Tool | Main capabilities |
+| --- | --- |
+| `T::address()` | Extract Chinese provinces from addresses |
+| `T::archive()` | Create and extract ZIP archives |
+| `T::barcode()` | Generate Code 128 as PNG or SVG |
+| `T::cache()` | In-memory cache put/get operations |
+| `T::clipboard()` | Read and write system clipboard text |
+| `T::cmd()` | Run shell commands with a timeout |
+| `T::config()` | Load `.env` files and read environment variables |
+| `T::cron()` | Schedule jobs with cron expressions |
+| `T::crypto()` | Generate keys and perform AES-GCM encryption/decryption |
+| `T::csv()` | Parse and generate CSV data |
+| `T::email()` | Send email through SMTP |
+| `T::excel()` | Read and write simple spreadsheets |
+| `T::geo()` | Calculate geographic distance |
+| `T::html()` | Select text and attributes with CSS selectors |
+| `T::http()` | Perform blocking HTTP GET requests |
+| `T::image()` | Resize images |
+| `T::jwt()` | Sign and verify JSON Web Tokens |
+| `T::kv()` | Open an embedded `sled` key-value database |
+| `T::phone()` | Parse, validate, and format phone numbers |
+| `T::pinyin()` | Convert Chinese text to Pinyin |
+| `T::proxy()` | Run a reverse proxy |
+| `T::qrcode()` | Generate QR codes as PNG or SVG |
+| `T::random()` | Generate random integers, floats, and booleans |
+| `T::server()` | Serve a directory over HTTP |
+| `T::template()` | Render Tera templates with JSON data |
+| `T::watcher()` | Watch filesystem changes recursively |
+
+### Extension Packages and Feature Flags
+
+- `teaql-tool-extra` is the optional heavy-tool extension. Enable it with `features = ["std", "extra"]` to make all 52 `T::` tools available.
+- `teaql-tool-context` is the application-layer extension. Its `std`, `extra`, and `http` features expose context-bound `ctx.xxx()` adapters; `all` enables all three.
+- The context `extra` adapters currently cover `address`, `archive`, `barcode`, `cache`, `clipboard`, `cmd`, `config`, `crypto`, `csv`, `email`, `excel`, `geo`, `html`, `image`, `jwt`, `kv`, `phone`, `pinyin`, `qrcode`, `random`, and `template`. `http` has its own feature; `cron`, `proxy`, `server`, and `watcher` currently have no context adapter.
 
 ---
 
@@ -156,16 +164,22 @@ While the `T::` facade is fantastic for standalone scripts or internal framework
 
 For application layer code, `teaql-tool` provides `teaql-tool-context`. This completely shadows the raw `T::` facade and binds all tools to the `UserContext` (`ctx`). 
 
-### The `MustComment` Constraint
-To prevent "naked" logic and enforce self-documenting code, every pure calculation or IO operation at the application layer is wrapped in a `MustComment<T>` or `PendingAction`. You cannot extract the result or execute the IO without explicitly chaining `.comment("intent")`.
+### Intent Constraints
+
+Context adapters distinguish calculations, reads, and side effects. A calculated value must be extracted with `.comment(...)`, a read result with `.purpose(...)`, and a deferred side effect is only executed by `.audit_as(...)`. These wrappers enforce an explicit intent at the API boundary; integrating the description with an audit sink remains the responsibility of the application runtime.
 
 ```rust
 use teaql_tool_context::prelude::*;
 
-// 1. Context-Aware Pure Math (Timezone injected automatically)
-let deadline = ctx.time().today().add_days(7).comment("Calculate grace period deadline");
+// 1. Context-bound calculation
+let now = ctx.time().now().comment("Read the current time for the payment policy");
+let deadline = ctx.time().add_days(now, 7).comment("Calculate the payment grace period");
 
-// 2. Context-Aware IO (Automatically logs Trace ID and intent)
+// 2. Deferred side effect: the write happens only when audit_as() is called
+ctx.file().write_string("deadline.txt", deadline.to_rfc3339())
+    .audit_as("Export the calculated payment deadline")?;
+
+// 3. Async HTTP uses the same explicit-intent pattern
 let data = ctx.http().get("https://api.github.com/tasks")
     .comment("Sync latest tasks from external provider")
     .await?;
@@ -175,7 +189,7 @@ let data = ctx.http().get("https://api.github.com/tasks")
 
 ## 🤖 AI & Developer Guardrails (Enforcing Context)
 
-If you are using AI agents (like Cursor) or building a large team, you must prevent developers and AI from bypassing the `ctx` layer. We provide physical and prompt-based guardrails to ensure 100% compliance.
+If you are using AI agents (like Cursor) or building a large team, compiler and prompt guardrails can help keep application code on the context-bound API.
 
 ### 1. The Compiler Block (`clippy.toml`)
 Place this in your application root to physically prevent compilation if raw tools or `std::fs` are used:
@@ -206,7 +220,7 @@ Place this prompt directive in your project root to align the AI before it even 
 
 1. **ABSOLUTE BAN ON `T::` TOOLS**: Inside the application layer, you are strictly forbidden from calling any stateless utility from the `teaql_tool::T` facade directly. 
 2. **MANDATORY CONTEXT USAGE**: All side effects (network, file) and all stateful computations (time, formatting, ID generation) MUST go through the user context (`ctx`).
-3. **MANDATORY BUSINESS INTENT**: Every single tool call must be appended with `.comment("English intent description")`. Without this, the compiler will reject the `MustComment<T>` wrapper.
+3. **MANDATORY BUSINESS INTENT**: Extract calculations with `.comment("intent")`, reads with `.purpose("intent")`, and execute side effects with `.audit_as("intent")`.
 ```
 
 ---

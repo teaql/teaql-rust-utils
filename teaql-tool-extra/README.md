@@ -21,5 +21,5 @@ You should rarely depend on this crate directly. Instead, depend on the `teaql-t
 
 ```toml
 [dependencies]
-teaql-tool-extra = "0.1"
+teaql-tool-extra = "2.0.0"
 ```

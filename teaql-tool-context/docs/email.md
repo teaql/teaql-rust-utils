@@ -10,20 +10,19 @@ Use `ctx.email()` to send emails.
 To use the Email utilities, you must add `teaql-tool` to your project with the `extra` feature enabled. Run the following command in your terminal:
 
 ```bash
-cargo add teaql-tool --features std,extra
+cargo add teaql-tool-context --features std,extra
 ```
 
 Or manually add it to your `Cargo.toml`:
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std", "extra"] }
+teaql-tool-context = { version = "2.0.0", features = ["std", "extra"] }
 ```
 
 ## Send Email
 
 ```rust
 ctx.email()
-    .audit_as("send welcome email to new user")
     .send(
         "smtp.example.com:587",
         "username",
@@ -32,9 +31,10 @@ ctx.email()
         "user@domain.com",
         "Welcome to our service!",
         "Hello, thank you for signing up!"
-    )?;
+    )
+    .audit_as("send welcome email to new user")?;
 ```
 
 ## Key Methods
-- `.audit_as(description)`: **(Required)** Describe the auditing reason for sending this email.
-- `.send(server: &str, user: &str, pass: &str, from: &str, to: &str, subject: &str, body: &str) -> Result<()>`: Sends an email using the specified SMTP server and credentials.
+- `.send(server, user, pass, from, to, subject, body)`: Builds a deferred email action.
+- `.audit_as(description)`: **(Required)** Describes the reason and sends the email.

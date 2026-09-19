@@ -3,8 +3,8 @@ pub mod env_config;
 pub mod formatter;
 
 pub use audit::{AuditConfig, AuditLevel, Module};
-pub use env_config::{audit_config_from_env, AuditSink, EnvAuditConfig, SchemaMode};
-pub use formatter::{AuditFormatter, AuditDetail};
+pub use env_config::{AuditSink, EnvAuditConfig, SchemaMode, audit_config_from_env};
+pub use formatter::{AuditDetail, AuditFormatter};
 
 use thiserror::Error;
 
@@ -80,26 +80,35 @@ impl<T: std::fmt::Debug> std::fmt::Debug for MustComment<T> {
     }
 }
 
-/// A zero-cost wrapper that forces the developer to provide an audit description for operations with side effects.
-#[repr(transparent)]
+/// A deferred operation that can only be executed by providing an audit description.
+///
+/// Unlike [`MustPurpose`] and [`MustComment`], this wrapper stores an action rather
+/// than an already-computed value. Dropping it without calling [`Self::audit_as`]
+/// therefore guarantees that the side effect is not performed.
 pub struct MustAuditAs<T> {
-    value: T,
+    action: Option<Box<dyn FnOnce(String) -> T + Send + 'static>>,
 }
 
 impl<T> MustAuditAs<T> {
-    #[inline(always)]
-    pub fn new(value: T) -> Self {
-        Self { value }
+    pub fn new(action: impl FnOnce(String) -> T + Send + 'static) -> Self {
+        Self {
+            action: Some(Box::new(action)),
+        }
     }
 
-    #[inline(always)]
-    pub fn audit_as(self, _desc: impl Into<String>) -> T {
-        self.value
+    pub fn audit_as(mut self, desc: impl Into<String>) -> T {
+        let action = self
+            .action
+            .take()
+            .expect("deferred audit action can only be executed once");
+        action(desc.into())
     }
 }
 
-impl<T: std::fmt::Debug> std::fmt::Debug for MustAuditAs<T> {
+impl<T> std::fmt::Debug for MustAuditAs<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Debug::fmt(&self.value, f)
+        f.debug_struct("MustAuditAs")
+            .field("pending", &self.action.is_some())
+            .finish()
     }
 }

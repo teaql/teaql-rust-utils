@@ -3,11 +3,11 @@ use teaql_tool::T;
 #[test]
 fn test_facade_standard_tools() {
     // Time Tool
-    let now = T::time().now().purpose("test");
+    let now = T::time().now();
     assert!(now.timestamp() > 0);
 
     // Id Tool
-    let uuid = T::id().uuid().purpose("test");
+    let uuid = T::id().uuid();
     assert_eq!(uuid.len(), 36);
 
     // Codec Tool
@@ -19,11 +19,11 @@ fn test_facade_standard_tools() {
 
     // Color Tool
     assert_eq!(T::color().alice_blue(), "#F0F8FF");
-    
+
     // DateRange Tool
     let today = T::daterange().today();
     assert!(today.start <= today.end);
-    
+
     // I18n Tool
     let mut i18n = T::i18n();
     i18n.add("en", "greet", "Hello");
@@ -37,20 +37,20 @@ fn test_facade_standard_tools() {
     assert!(T::filter().contains_sensitive("a bad word", &trie));
 
     // Text Tool
-    let text = T::text().trim(" hello ").purpose("test");
+    let text = T::text().trim(" hello ");
     assert_eq!(text, "hello");
 
     // Json Tool
-    let parsed = T::json().parse(r#"{"test": 1}"#).unwrap().purpose("test");
-    assert!(T::json().has(&parsed, "/test").purpose("test"));
+    let parsed = T::json().parse(r#"{"test": 1}"#).unwrap();
+    assert!(T::json().has(&parsed, "/test"));
 
     // Decimal Tool
-    let dec = T::decimal().of("10.5").unwrap().purpose("test");
-    assert_eq!(T::decimal().add(dec, dec).purpose("test").to_string(), "21.0");
+    let dec = T::decimal().of("10.5").unwrap();
+    assert_eq!(T::decimal().add(dec, dec).to_string(), "21.0");
 
     // Money Tool
-    let money = T::money().of("100", "USD").unwrap().purpose("test");
-    assert_eq!(T::money().format(&money).purpose("test"), "100 USD");
+    let money = T::money().of("100", "USD").unwrap();
+    assert_eq!(T::money().format(&money), "100 USD");
 }
 
 #[test]

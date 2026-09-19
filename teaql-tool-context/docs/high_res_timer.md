@@ -7,7 +7,7 @@ Use `ctx.high_res_timer()` to access high-resolution timing utilities. This is u
 To use the high resolution timer, you must add `teaql-tool` to your project with the `std` feature enabled.
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## Basic Usage

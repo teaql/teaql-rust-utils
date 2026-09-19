@@ -11,13 +11,13 @@ Use `ctx.file()` to perform local filesystem operations. This client is fully in
 To use the file utilities, you must add `teaql-tool` to your project with the `std` feature enabled. Run the following command in your terminal:
 
 ```bash
-cargo add teaql-tool --features std
+cargo add teaql-tool-context --features std
 ```
 
 Or manually add it to your `Cargo.toml`:
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## Reading Files
@@ -25,14 +25,14 @@ teaql-tool = { version = "1.0", features = ["std"] }
 ```rust
 let content = ctx.file()
     .read_string("config.json")?
-    .purpose("load application configuration")?;
+    .purpose("load application configuration");
 ```
 
 ## Writing Files
 
 ```rust
 ctx.file()
-    .write_string("output.txt", "Hello World!")?
+    .write_string("output.txt", "Hello World!")
     .audit_as("export generated report to file")?;
 ```
 
@@ -41,7 +41,7 @@ ctx.file()
 ```rust
 let is_present = ctx.file()
     .exists("data/report.csv")
-    .purpose("check if report exists before generation")?;
+    .purpose("check if report exists before generation");
 ```
 
 ## Key Methods
