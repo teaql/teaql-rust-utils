@@ -77,17 +77,6 @@ macro_rules! delegate_purpose {
     };
 }
 
-macro_rules! delegate_audit {
-    ($tool_expr:expr, $( fn $method:ident(&self $(, $arg:ident : $ty:ty)*) -> $ret:ty );* $(;)?) => {
-        $(
-            #[inline]
-            pub fn $method(&self $(, $arg: $ty)*) -> teaql_tool_core::MustAuditAs<$ret> {
-                teaql_tool_core::MustAuditAs::new($tool_expr.$method($($arg),*))
-            }
-        )*
-    };
-}
-
 macro_rules! delegate_res_comment {
     ($tool_expr:expr, $( fn $method:ident(&self $(, $arg:ident : $ty:ty)*) -> $ret:ty );* $(;)?) => {
         $(
@@ -110,22 +99,9 @@ macro_rules! delegate_res_purpose {
     };
 }
 
-macro_rules! delegate_res_audit {
-    ($tool_expr:expr, $( fn $method:ident(&self $(, $arg:ident : $ty:ty)*) -> $ret:ty );* $(;)?) => {
-        $(
-            #[inline]
-            pub fn $method(&self $(, $arg: $ty)*) -> teaql_tool_core::Result<teaql_tool_core::MustAuditAs<$ret>> {
-                $tool_expr.$method($($arg),*).map(teaql_tool_core::MustAuditAs::new)
-            }
-        )*
-    };
-}
-
 pub(crate) use define_context_facade;
 pub(crate) use delegate;
 pub(crate) use delegate_comment;
 pub(crate) use delegate_purpose;
-pub(crate) use delegate_audit;
 pub(crate) use delegate_res_comment;
 pub(crate) use delegate_res_purpose;
-pub(crate) use delegate_res_audit;

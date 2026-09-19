@@ -10,13 +10,13 @@ Use `ctx.http()` to make outgoing HTTP requests. This client is fully integrated
 To use the HTTP client and other network features, you must add `teaql-tool` to your project with the `http` feature enabled. Run the following command in your terminal:
 
 ```bash
-cargo add teaql-tool --features std,http
+cargo add teaql-tool-context --features std,http
 ```
 
 Or manually add it to your `Cargo.toml`:
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std", "http"] }
+teaql-tool-context = { version = "2.0.0", features = ["std", "http"] }
 ```
 
 ## GET Request

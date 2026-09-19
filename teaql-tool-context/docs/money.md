@@ -7,7 +7,7 @@ Use `ctx.money()` for safe, precise currency and financial calculations using `r
 To use the money utilities, you must add `teaql-tool` to your project with the `std` feature enabled.
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## Financial Calculations

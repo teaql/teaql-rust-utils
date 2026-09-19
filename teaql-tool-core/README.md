@@ -10,7 +10,7 @@ You typically do not need to depend on this crate directly unless you are writin
 
 ```toml
 [dependencies]
-teaql-tool-core = "0.1"
+teaql-tool-core = "2.0.0"
 ```
 
 ```rust

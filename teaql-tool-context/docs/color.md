@@ -7,13 +7,13 @@ Use `ctx.color()` to access standard web color names as string references. This 
 To use the color utilities, you must add `teaql-tool` to your project with the `std` feature enabled. Run the following command in your terminal:
 
 ```bash
-cargo add teaql-tool --features std
+cargo add teaql-tool-context --features std
 ```
 
 Or manually add it to your `Cargo.toml`:
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## Basic Usage

@@ -38,10 +38,10 @@ Add `teaql-tool` to your `Cargo.toml`. You can selectively opt into features dep
 ```toml
 [dependencies]
 # For the standard lightweight utilities
-teaql-tool = { version = "0.1", features = ["std"] }
+teaql-tool = { version = "2.0.0", features = ["std"] }
 
 # For everything (including network, crypto, images, web scraping, and watchers)
-teaql-tool = { version = "0.1", features = ["std", "extra"] }
+teaql-tool = { version = "2.0.0", features = ["std", "extra"] }
 ```
 
 ---
@@ -164,16 +164,22 @@ While the `T::` facade is fantastic for standalone scripts or internal framework
 
 For application layer code, `teaql-tool` provides `teaql-tool-context`. This completely shadows the raw `T::` facade and binds all tools to the `UserContext` (`ctx`). 
 
-### The `MustComment` Constraint
-To prevent "naked" logic and enforce self-documenting code, every pure calculation or IO operation at the application layer is wrapped in a `MustComment<T>` or `PendingAction`. You cannot extract the result or execute the IO without explicitly chaining `.comment("intent")`.
+### Intent Constraints
+
+Context adapters distinguish calculations, reads, and side effects. A calculated value must be extracted with `.comment(...)`, a read result with `.purpose(...)`, and a deferred side effect is only executed by `.audit_as(...)`. These wrappers enforce an explicit intent at the API boundary; integrating the description with an audit sink remains the responsibility of the application runtime.
 
 ```rust
 use teaql_tool_context::prelude::*;
 
-// 1. Context-Aware Pure Math (Timezone injected automatically)
-let deadline = ctx.time().today().add_days(7).comment("Calculate grace period deadline");
+// 1. Context-bound calculation
+let now = ctx.time().now().comment("Read the current time for the payment policy");
+let deadline = ctx.time().add_days(now, 7).comment("Calculate the payment grace period");
 
-// 2. Context-Aware IO (Automatically logs Trace ID and intent)
+// 2. Deferred side effect: the write happens only when audit_as() is called
+ctx.file().write_string("deadline.txt", deadline.to_rfc3339())
+    .audit_as("Export the calculated payment deadline")?;
+
+// 3. Async HTTP uses the same explicit-intent pattern
 let data = ctx.http().get("https://api.github.com/tasks")
     .comment("Sync latest tasks from external provider")
     .await?;
@@ -183,7 +189,7 @@ let data = ctx.http().get("https://api.github.com/tasks")
 
 ## 🤖 AI & Developer Guardrails (Enforcing Context)
 
-If you are using AI agents (like Cursor) or building a large team, you must prevent developers and AI from bypassing the `ctx` layer. We provide physical and prompt-based guardrails to ensure 100% compliance.
+If you are using AI agents (like Cursor) or building a large team, compiler and prompt guardrails can help keep application code on the context-bound API.
 
 ### 1. The Compiler Block (`clippy.toml`)
 Place this in your application root to physically prevent compilation if raw tools or `std::fs` are used:
@@ -214,7 +220,7 @@ Place this prompt directive in your project root to align the AI before it even 
 
 1. **ABSOLUTE BAN ON `T::` TOOLS**: Inside the application layer, you are strictly forbidden from calling any stateless utility from the `teaql_tool::T` facade directly. 
 2. **MANDATORY CONTEXT USAGE**: All side effects (network, file) and all stateful computations (time, formatting, ID generation) MUST go through the user context (`ctx`).
-3. **MANDATORY BUSINESS INTENT**: Every single tool call must be appended with `.comment("English intent description")`. Without this, the compiler will reject the `MustComment<T>` wrapper.
+3. **MANDATORY BUSINESS INTENT**: Extract calculations with `.comment("intent")`, reads with `.purpose("intent")`, and execute side effects with `.audit_as("intent")`.
 ```
 
 ---

@@ -4609,6 +4609,9 @@ name = "smallvec"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "socket2"
@@ -4784,38 +4787,46 @@ dependencies = [
 
 [[package]]
 name = "teaql-core"
-version = "4.0.5"
+version = "4.3.5"
 dependencies = [
  "chrono",
  "rust_decimal",
  "serde",
  "serde_json",
+ "smallvec",
 ]
 
 [[package]]
 name = "teaql-data-service"
-version = "4.0.5"
+version = "4.3.5"
 dependencies = [
+ "futures-core",
  "teaql-core",
 ]
 
 [[package]]
 name = "teaql-runtime"
-version = "4.0.5"
+version = "4.3.5"
 dependencies = [
  "async-trait",
  "chrono",
+ "futures-core",
+ "futures-util",
  "rust_decimal",
+ "serde",
  "serde_json",
  "teaql-core",
  "teaql-data-service",
  "teaql-sql",
+ "tokio",
 ]
 
 [[package]]
 name = "teaql-sql"
-version = "4.0.5"
+version = "4.3.5"
 dependencies = [
+ "futures-core",
+ "futures-util",
  "teaql-core",
  "teaql-data-service",
 ]

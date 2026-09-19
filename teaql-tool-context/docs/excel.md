@@ -7,13 +7,13 @@ Use `ctx.excel()` to read and write simple Excel files.
 To use the Excel utilities and other extra features, you must add `teaql-tool` to your project with the `extra` feature enabled. Run the following command in your terminal:
 
 ```bash
-cargo add teaql-tool --features std,extra
+cargo add teaql-tool-context --features std,extra
 ```
 
 Or manually add it to your `Cargo.toml`:
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std", "extra"] }
+teaql-tool-context = { version = "2.0.0", features = ["std", "extra"] }
 ```
 
 ## Example Usage

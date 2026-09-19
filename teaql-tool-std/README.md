@@ -1,6 +1,6 @@
 # teaql-tool-std
 
-Zero-dependency standard utilities for the [TeaQL Tool](https://github.com/teaql/teaql-rust-utils) ecosystem.
+Lightweight standard utilities for the [TeaQL Tool](https://github.com/teaql/teaql-rust-utils) ecosystem.
 
 This crate provides a pure, memory-bound utility toolkit for everyday Rust development. It features extremely lightweight dependencies, making it cross-platform and highly suitable for strict security environments.
 
@@ -21,5 +21,5 @@ You should rarely depend on this crate directly. Instead, depend on the `teaql-t
 
 ```toml
 [dependencies]
-teaql-tool-std = "0.1"
+teaql-tool-std = "2.0.0"
 ```

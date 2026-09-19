@@ -7,7 +7,7 @@ Use `ctx.map()` to perform operations on HashMaps, such as merging multiple maps
 To use the map utilities, you must add `teaql-tool` to your project with the `std` feature enabled.
 
 ```toml
-teaql-tool = { version = "1.0", features = ["std"] }
+teaql-tool-context = { version = "2.0.0", features = ["std"] }
 ```
 
 ## Map Operations
