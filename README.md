@@ -23,6 +23,32 @@
 
 ## 🎯 Motivation
 
+### Building Deterministic Foundations in the AI Coding Era
+
+AI coding introduces a probabilistic participant into a software process built on deterministic tools. An agent may choose a different crate, recall an API from another version, invent a plausible method name, or perform the right operation in the wrong order. Asking it to “be more careful” does not create an engineering boundary.
+
+TeaQL Tool does not try to make AI deterministic. Instead, it reduces the surface area where uncertainty can enter a project:
+
+- A small, stable `T::` vocabulary replaces dozens of unrelated third-party APIs.
+- Strong types and consistent return values turn many mistakes into compiler errors.
+- Explicit intent wrappers such as purpose, comment, and audit metadata make consequential operations easier to review and govern.
+- Centralized adapters isolate dependency changes instead of spreading them through generated and handwritten code.
+- Deterministic tests verify the behavior behind the facade, regardless of whether the caller is a human or an AI agent.
+
+```text
+Probabilistic AI intent
+          ↓
+Small, stable tool vocabulary
+          ↓
+Typed APIs and explicit intent boundaries
+          ↓
+Compiler checks and deterministic tests
+          ↓
+More predictable, reproducible software behavior
+```
+
+> **TeaQL Tool does not make AI deterministic. It gives probabilistic coding agents a smaller, typed, and more predictable path toward deterministic software.**
+
 When developing business applications, quick automation scripts, or working with AI coding agents, you frequently need essential tools: parsing dates, generating UUIDs, calculating exact monetary values, reading JSON, checking emails, or encrypting data. 
 
 In the Rust ecosystem, this normally requires hunting down dozens of different crates (`chrono`, `uuid`, `rust_decimal`, `regex`, `base64`, `reqwest`, `zip`, etc.), learning each of their unique APIs, and dealing with potential breaking changes. 
